@@ -7,7 +7,7 @@ import (
 
 type EngineConfig struct {
 	EngineVersion 		string		// Version of the Engine, e.g., "v1.0.0"
-	DefaultAlgorithm 	string		// Default encryption algorithm, e.g., "AES-256-GCM"
+	DefaultAlgorithm 	Algorithm	// Default encryption algorithm, e.g., "AES-256-GCM"
 	KeyRotationInterval int			// Key rotation interval in days
 	MaxKeyVersions 		int			// Maximum number of key versions to retain
 	DisabledDecryption 	bool		// Decrypt data with disabled keys
