@@ -1,25 +1,34 @@
 package core
 
-// KeyMetadata represents the metadata of a key, including its ID, versions, and creation time.
+import "time"
+
+// KeyMetadata represents the metadata associated with a key, including its unique identifier,
+// creation time, and current state.
 type KeyMetadata struct {
 	KeyID     string
-	Versions  []KeyVersion
-	CreatedAt int64
+	CreatedAt time.Time
+	State	 string // e.g., "Enabled", "Disabled", "PendingDeletion"
+	LatestVersion int
 }
 
 // KeyVersion represents a specific version of a key, including its version number, 
-// creation time, key bytes, and whether it is disabled.
+// creation time, and the key material.
 type KeyVersion struct {
 	Version   int
-	CreatedAt int64
-	KeyBytes []byte
-	Disabled  bool
+	CreatedAt time.Time
+	Material []byte
 }
 
-// KeyStore defines the interface for a key storage system, allowing for saving, 
-// retrieving, and updating key metadata.
+
 type KeyStore interface {
-	SaveKey(keyMeta KeyMetadata) error
-	GetKey(keyID string) (KeyMetadata, error)
-	UpdateKey(keyMeta KeyMetadata) error
+	// Metadata operations
+	SaveKey(meta KeyMetadata) error
+	GetKey(id string) (KeyMetadata, error)
+	UpdateKey(meta KeyMetadata) error
+	DeleteKey(id string) error
+
+	// Version operations
+	SaveVersion(keyID string, version KeyVersion) error
+	GetVersion(keyID string, version int) (KeyVersion, error)
+	ListVersions(keyID string) ([]KeyVersion, error)
 }
