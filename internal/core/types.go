@@ -16,13 +16,16 @@ type CreateKeyResponse struct {
 }
 
 type EncryptRequest struct {
-	KeyID     string
-	Plaintext []byte
+	KeyID     		string
+	Plaintext 		[]byte
+	AdditionalData 	[]byte
 }
 
 type EncryptResponse struct {
-	Ciphertext []byte
-	Version    int
+	Ciphertext 	[]byte
+	Version    	int
+	KeyID		string
+	Algorithm 	Algorithm
 }
 
 type DecryptRequest struct {

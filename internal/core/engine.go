@@ -2,11 +2,10 @@ package core
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/michaeljmartin28/minikms/internal/crypto"
 )
 
 
@@ -36,29 +35,22 @@ func NewEngine(storage KeyStore, crypto Crypto, cfg EngineConfig) *Engine {
 var _ CoreKMS = (*Engine)(nil)
 
 func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKeyResponse, error) {
-	
-	aesgcm := crypto.NewAESGCMCrypto()
 
-	keyBytes, err := aesgcm.GenerateKey(req.Algorithm)
-	if err != nil{
-		return nil, err
-	}
-	log.Printf("AES-256-GCM key created: %vb\n", keyBytes)
+	keyBytes, err := e.Crypto.GenerateKey(req.Algorithm)
+	version := 1
 
-	v := 1
-
-	version := KeyVersion{
-		Version: v,
+	keyVersion := KeyVersion{
+		Version: version,
 		CreatedAt: time.Now(),
 		Material: keyBytes,
 	}
 
 	meta := KeyMetadata{
 		KeyID: uuid.New().String(),
-		CreatedAt: version.CreatedAt,
+		CreatedAt: keyVersion.CreatedAt,
 		Algorithm: req.Algorithm,
 		State: Disabled,
-		LatestVersion: v,
+		LatestVersion: version,
 	}
 
 	err = e.Storage.SaveKey(meta)
@@ -66,23 +58,54 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 		return nil, err
 	}
 
-	err = e.Storage.SaveVersion(meta.KeyID, version)
+	err = e.Storage.SaveVersion(meta.KeyID, keyVersion)
 	if err != nil {
 		return nil, err
 	}
 
 	response := CreateKeyResponse{
 		KeyID: meta.KeyID,
-		Version: v,
-		CreateAt: version.CreatedAt,
+		Version: version,
+		CreateAt: keyVersion.CreatedAt,
 	}
 
 	return &response, nil
 }
 
 func (e *Engine) Encrypt(ctx context.Context, req EncryptRequest) (*EncryptResponse, error) {
-	// TODO: implement
-	return &EncryptResponse{}, nil
+	
+	if req.Plaintext == nil || len(req.Plaintext) == 0{
+		return nil, fmt.Errorf("the encrypt request did not include any plaintext to encrypt")
+	}
+
+	keyMetadata, err := e.Storage.GetKey(req.KeyID)
+	if err != nil {
+		return nil, err
+	}
+
+	if keyMetadata.State == Disabled{
+		return nil, fmt.Errorf("key is disabled, cannot complete request")
+	}
+
+	keyVersion, err := e.Storage.GetVersion(keyMetadata.KeyID, keyMetadata.LatestVersion)
+	if err != nil {
+		return nil, err
+	}
+	
+	ciphertext, err := e.Crypto.Encrypt(keyMetadata.Algorithm, keyVersion.Material, req.Plaintext, req.AdditionalData)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EncryptResponse{
+		Ciphertext: ciphertext,
+		Version: keyVersion.Version,
+		KeyID: keyMetadata.KeyID,
+		Algorithm: keyMetadata.Algorithm,
+	}
+
+	return response, nil
 }
 
 func (e *Engine) Decrypt(ctx context.Context, req DecryptRequest) (*DecryptResponse, error) {
