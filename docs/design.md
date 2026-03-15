@@ -124,6 +124,8 @@ _Encoded as base64 for REST._
 
 ## 5. Storage Model (bbolt)
 
+This project uses etc.d bbolt to store keys in a local file-based database.
+
 ### Buckets
 
 ```
@@ -133,8 +135,11 @@ key_versions/ -> versioned key material (binary)
 
 ### Key Layout
 
-- `keys/<key_id>` -> metadata JSON
-- `key_versions/<key_id>/<version>` -> raw key bytes
+keys bucket:
+`<keyID>` -> metatdata about a key
+
+versions bucket:
+`<keyID>:<versionNumber>` -> serialized KeyVersion
 
 ### Rationale
 
