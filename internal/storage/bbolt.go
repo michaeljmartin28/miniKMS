@@ -87,6 +87,23 @@ func deserializeKeyMetadata(data []byte) (core.KeyMetadata, error) {
 	return meta, nil
 }
 
+func serializeKeyVersion(version core.KeyVersion) ([]byte, error) {
+	data, err := json.Marshal(version)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func deserializeKeyVersion(data []byte) (core.KeyVersion, error) {
+	var version core.KeyVersion
+	err := json.Unmarshal(data, &version)
+	if err != nil {
+		return core.KeyVersion{}, err
+	}
+	return version, nil
+}
+
 // compile-time assertion to ensure BoltStore implements the core.keystore interface
 var _ core.KeyStore = (*BoltStore)(nil)
 
@@ -172,7 +189,9 @@ func (s *BoltStore) DeleteKey(keyID string) error {
 }
 
 func (s *BoltStore) SaveVersion(keyID string, version core.KeyVersion) error {
-	// implement saving a key version in BoltDB
+	
+	
+
 	return nil
 }
 
