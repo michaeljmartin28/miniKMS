@@ -142,9 +142,23 @@ func (s * BoltStore) GetKey(keyID string) (core.KeyMetadata, error){
 }
 
 func (s *BoltStore) UpdateKey(keyMeta core.KeyMetadata) error {
-	// implement updating key metadata in BoltDB
-	return nil
-}
+	
+	return s.db.Update(func (tx *bbolt.Tx) error{
+		bucket := tx.Bucket([]byte(keyMetaBucket))
+		if bucket == nil {
+			return fmt.Errorf("Bucket %s not found", keyMetaBucket)
+		}
+		keyID := []byte(keyMeta.KeyID)
+		// Make sure the key does already exist before updating
+		if bucket.Get(keyID) == nil {
+			return fmt.Errorf("Key with ID %s does not exist", keyMeta.KeyID)
+		}
+		data, err := serializeKeyMetadata(keyMeta)
+		if err != nil {
+			return err
+		}
+		return bucket.Put(keyID, data)
+	})}
 
 func (s *BoltStore) DeleteKey(keyID string) error {
 	// implement deleting key metadata from BoltDB
