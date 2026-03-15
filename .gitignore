@@ -38,3 +38,6 @@ go.work.sum
 *.db
 *.sqlite
 ./data/*
+
+# Workspace configs
+.vscode/*

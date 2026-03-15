@@ -1,13 +1,18 @@
 package core
 
+import "time"
+
 type CreateKeyRequest struct {
-	KeySpec string
+	Name      string
+	Algorithm Algorithm
+	// Future: KeyUsage, ProtectionLevel, Policy, Tags, etc...
+
 }
 
 type CreateKeyResponse struct {
 	KeyID    string
 	Version  int
-	CreateAt int64
+	CreateAt time.Time
 }
 
 type EncryptRequest struct {

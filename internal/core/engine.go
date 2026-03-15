@@ -2,6 +2,11 @@ package core
 
 import (
 	"context"
+	"log"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/michaeljmartin28/minikms/internal/crypto"
 )
 
 
@@ -32,7 +37,47 @@ var _ CoreKMS = (*Engine)(nil)
 
 func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKeyResponse, error) {
 	
-	return &CreateKeyResponse{}, nil
+	aesgcm := crypto.NewAESGCMCrypto()
+
+	keyBytes, err := aesgcm.GenerateKey(req.Algorithm)
+	if err != nil{
+		return nil, err
+	}
+	log.Printf("AES-256-GCM key created: %vb\n", keyBytes)
+
+	v := 1
+
+	version := KeyVersion{
+		Version: v,
+		CreatedAt: time.Now(),
+		Material: keyBytes,
+	}
+
+	meta := KeyMetadata{
+		KeyID: uuid.New().String(),
+		CreatedAt: version.CreatedAt,
+		Algorithm: req.Algorithm,
+		State: Disabled,
+		LatestVersion: v,
+	}
+
+	err = e.Storage.SaveKey(meta)
+	if err != nil {
+		return nil, err
+	}
+
+	err = e.Storage.SaveVersion(meta.KeyID, version)
+	if err != nil {
+		return nil, err
+	}
+
+	response := CreateKeyResponse{
+		KeyID: meta.KeyID,
+		Version: v,
+		CreateAt: version.CreatedAt,
+	}
+
+	return &response, nil
 }
 
 func (e *Engine) Encrypt(ctx context.Context, req EncryptRequest) (*EncryptResponse, error) {
