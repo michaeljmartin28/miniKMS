@@ -8,26 +8,23 @@ import (
 	"github.com/google/uuid"
 )
 
-
 type EngineConfig struct {
-	DefaultAlgorithm 	Algorithm	// Default encryption algorithm, e.g., "AES-256-GCM"
-	MaxKeyVersions 		int			// Maximum number of key versions to retain
-	DisabledDecryption 	bool		// Decrypt data with disabled keys
-	
+	DefaultAlgorithm     Algorithm // Default encryption algorithm, e.g., "AES-256-GCM"
+	MaxKeyVersions       int       // Maximum number of key versions to retain
+	AllowDecryptDisabled bool      // Decrypt data with disabled keys
 }
-
 
 type Engine struct {
 	Storage KeyStore
-	Crypto Crypto
-	Cfg EngineConfig
+	Crypto  Crypto
+	Cfg     EngineConfig
 }
 
 func NewEngine(storage KeyStore, crypto Crypto, cfg EngineConfig) *Engine {
 	return &Engine{
 		Storage: storage,
-		Crypto: crypto,
-		Cfg: cfg,
+		Crypto:  crypto,
+		Cfg:     cfg,
 	}
 }
 
@@ -40,16 +37,16 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 	version := 1
 
 	keyVersion := KeyVersion{
-		Version: version,
+		Version:   version,
 		CreatedAt: time.Now(),
-		Material: keyBytes,
+		Material:  keyBytes,
 	}
 
 	meta := KeyMetadata{
-		KeyID: uuid.New().String(),
-		CreatedAt: keyVersion.CreatedAt,
-		Algorithm: req.Algorithm,
-		State: Disabled,
+		KeyID:         uuid.New().String(),
+		CreatedAt:     keyVersion.CreatedAt,
+		Algorithm:     req.Algorithm,
+		State:         Disabled,
 		LatestVersion: version,
 	}
 
@@ -64,8 +61,8 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 	}
 
 	response := CreateKeyResponse{
-		KeyID: meta.KeyID,
-		Version: version,
+		KeyID:    meta.KeyID,
+		Version:  version,
 		CreateAt: keyVersion.CreatedAt,
 	}
 
@@ -73,8 +70,8 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 }
 
 func (e *Engine) Encrypt(ctx context.Context, req EncryptRequest) (*EncryptResponse, error) {
-	
-	if req.Plaintext == nil || len(req.Plaintext) == 0{
+
+	if req.Plaintext == nil || len(req.Plaintext) == 0 {
 		return nil, fmt.Errorf("the encrypt request did not include any plaintext to encrypt")
 	}
 
@@ -83,7 +80,7 @@ func (e *Engine) Encrypt(ctx context.Context, req EncryptRequest) (*EncryptRespo
 		return nil, err
 	}
 
-	if keyMetadata.State == Disabled{
+	if keyMetadata.State == Disabled {
 		return nil, fmt.Errorf("key is disabled, cannot complete request")
 	}
 
@@ -91,7 +88,7 @@ func (e *Engine) Encrypt(ctx context.Context, req EncryptRequest) (*EncryptRespo
 	if err != nil {
 		return nil, err
 	}
-	
+
 	ciphertext, err := e.Crypto.Encrypt(keyMetadata.Algorithm, keyVersion.Material, req.Plaintext, req.AdditionalData)
 
 	if err != nil {
@@ -100,17 +97,42 @@ func (e *Engine) Encrypt(ctx context.Context, req EncryptRequest) (*EncryptRespo
 
 	response := &EncryptResponse{
 		Ciphertext: ciphertext,
-		Version: keyVersion.Version,
-		KeyID: keyMetadata.KeyID,
-		Algorithm: keyMetadata.Algorithm,
+		Version:    keyVersion.Version,
+		KeyID:      keyMetadata.KeyID,
+		Algorithm:  keyMetadata.Algorithm,
 	}
 
 	return response, nil
 }
 
 func (e *Engine) Decrypt(ctx context.Context, req DecryptRequest) (*DecryptResponse, error) {
-	// TODO: implement
-	return &DecryptResponse{}, nil
+
+	if req.Ciphertext == nil || len(req.Ciphertext) == 0 {
+		return nil, fmt.Errorf("the request must include the ciphertext to decrypt")
+	}
+
+	keyMetadata, err := e.Storage.GetKey(req.KeyID)
+	if err != nil {
+		return nil, err
+	}
+
+	if keyMetadata.State == Disabled && !e.Cfg.AllowDecryptDisabled {
+		return nil, fmt.Errorf("the key is disabled and decryption is not allowed for this key")
+	}
+
+	keyVersion, err := e.Storage.GetVersion(keyMetadata.KeyID, req.Version)
+	if err != nil {
+		return nil, err
+	}
+
+	plaintext, err := e.Crypto.Decrypt(keyMetadata.Algorithm, keyVersion.Material, req.Ciphertext, req.AdditionalData)
+	if err != nil {
+		return nil, err
+	}
+
+	response := DecryptResponse{Plaintext: plaintext}
+
+	return &response, nil
 }
 
 func (e *Engine) GenerateDataKey(ctx context.Context, req GenerateDataKeyRequest) (*GenerateDataKeyResponse, error) {
