@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -231,6 +232,28 @@ func (s *BoltStore) GetVersion(keyID string, version int) (core.KeyVersion, erro
 }
 
 func (s *BoltStore) ListVersions(keyID string) ([]core.KeyVersion, error) {
-	// implement listing all versions of a key from BoltDB
-	return nil, nil
+	
+	versions := make([]core.KeyVersion, 0, 4)
+
+	err := s.db.View(func(tx *bbolt.Tx) error {
+		bucket := tx.Bucket([]byte(keyVersionsBucket))
+		if bucket == nil {
+			return fmt.Errorf("bucket %s not found", keyVersionsBucket)
+		}
+
+		c := bucket.Cursor()
+		prefix := []byte(fmt.Sprintf("%s:", keyID))
+		for k, v := c.Seek(prefix); k != nil && bytes.HasPrefix(k, prefix); k, v = c.Next() {
+			version, err := deserializeKeyVersion(v)
+			if err != nil {
+				return err
+			}
+			versions = append(versions, version)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return versions, nil
 }
