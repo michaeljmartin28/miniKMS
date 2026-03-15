@@ -14,6 +14,14 @@ type EngineConfig struct {
 	AllowDecryptDisabled bool      // Decrypt data with disabled keys
 }
 
+func DefaultConfig() EngineConfig {
+	return EngineConfig{
+		DefaultAlgorithm:     AES256GCM,
+		AllowDecryptDisabled: false,
+		MaxKeyVersions:       0,
+	}
+}
+
 type Engine struct {
 	Storage KeyStore
 	Crypto  Crypto
@@ -46,7 +54,7 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 		KeyID:         uuid.New().String(),
 		CreatedAt:     keyVersion.CreatedAt,
 		Algorithm:     req.Algorithm,
-		State:         Disabled,
+		State:         Enabled,
 		LatestVersion: version,
 	}
 
