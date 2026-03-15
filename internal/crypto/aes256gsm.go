@@ -29,7 +29,7 @@ func (a *AESGCMCrypto) GenerateKey(alg core.Algorithm) ([]byte, error) {
 	}
 }
 
-func (a *AESGCMCrypto) Encrypt(alg core.Algorithm, key []byte, plaintext []byte, add []byte) ([]byte, error) {
+func (a *AESGCMCrypto) Encrypt(alg core.Algorithm, key []byte, plaintext []byte, additionalData []byte) ([]byte, error) {
 	switch alg {
 
 	case core.AES256GCM:
@@ -50,7 +50,7 @@ func (a *AESGCMCrypto) Encrypt(alg core.Algorithm, key []byte, plaintext []byte,
 			return nil, err
 		}
 
-		ciphertext := gcm.Seal(nil, nonce, plaintext, add)
+		ciphertext := gcm.Seal(nil, nonce, plaintext, additionalData)
 		ciphertext = append(nonce, ciphertext...)
 
 		return ciphertext, nil
@@ -60,7 +60,7 @@ func (a *AESGCMCrypto) Encrypt(alg core.Algorithm, key []byte, plaintext []byte,
 	
 }
 
-func (a *AESGCMCrypto) Decrypt(alg core.Algorithm, key []byte, ciphertext []byte, add []byte) ([]byte, error) {
+func (a *AESGCMCrypto) Decrypt(alg core.Algorithm, key []byte, ciphertext []byte, additionalData []byte) ([]byte, error) {
 	switch alg {
 	case core.AES256GCM:
 		// Create a new AES cipher block
@@ -85,7 +85,7 @@ func (a *AESGCMCrypto) Decrypt(alg core.Algorithm, key []byte, ciphertext []byte
 
 		// Decrypt the ciphertext using the nonce and additional data
 		ciphertext = ciphertext[nonceSize:]
-		plaintext, err := gcm.Open(nil, nonce, ciphertext, add)
+		plaintext, err := gcm.Open(nil, nonce, ciphertext, additionalData)
 		if err != nil {
 			return nil, err
 		}

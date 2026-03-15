@@ -15,6 +15,6 @@ type Ciphertext struct {
 
 type Crypto interface {
 	GenerateKey(algorithm Algorithm) ([]byte, error)
-	Encrypt(alg Algorithm, plaintext []byte, key []byte) ([]byte, error)
-	Decrypt(alg Algorithm, ciphertext []byte, key []byte) ([]byte, error)
+	Encrypt(alg Algorithm, key []byte, plaintext []byte, additionalData []byte) ([]byte, error)
+	Decrypt(alg Algorithm, key []byte, ciphertext []byte, additionalData []byte) ([]byte, error)
 }

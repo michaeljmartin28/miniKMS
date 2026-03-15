@@ -6,9 +6,7 @@ import (
 
 
 type EngineConfig struct {
-	EngineVersion 		string		// Version of the Engine, e.g., "v1.0.0"
 	DefaultAlgorithm 	Algorithm	// Default encryption algorithm, e.g., "AES-256-GCM"
-	KeyRotationInterval int			// Key rotation interval in days
 	MaxKeyVersions 		int			// Maximum number of key versions to retain
 	DisabledDecryption 	bool		// Decrypt data with disabled keys
 	
@@ -16,16 +14,16 @@ type EngineConfig struct {
 
 
 type Engine struct {
-	storage KeyStore
-	crypto Crypto
-	cfg EngineConfig
+	Storage KeyStore
+	Crypto Crypto
+	Cfg EngineConfig
 }
 
 func NewEngine(storage KeyStore, crypto Crypto, cfg EngineConfig) *Engine {
 	return &Engine{
-		storage: storage,
-		crypto: crypto,
-		cfg: cfg,
+		Storage: storage,
+		Crypto: crypto,
+		Cfg: cfg,
 	}
 }
 
@@ -33,7 +31,7 @@ func NewEngine(storage KeyStore, crypto Crypto, cfg EngineConfig) *Engine {
 var _ CoreKMS = (*Engine)(nil)
 
 func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKeyResponse, error) {
-	// TODO: implement
+	
 	return &CreateKeyResponse{}, nil
 }
 
