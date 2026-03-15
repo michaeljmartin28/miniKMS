@@ -13,3 +13,4 @@ type CoreKMS interface {
 	DecryptDataKey(ctx context.Context, req DecryptDataKeyRequest) (*DecryptDataKeyResponse, error)
 	RotateKey(ctx context.Context, keyID string) (int, error)
 }
+

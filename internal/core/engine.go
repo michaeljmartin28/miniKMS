@@ -1,15 +1,31 @@
 package core
 
-import "context"
+import (
+	"context"
+)
 
-type Engine struct {
-	store KeyStore
-	// Additional fields for the engine can be added here, such as configuration options, logging, etc.
+
+type EngineConfig struct {
+	EngineVersion 		string		// Version of the Engine, e.g., "v1.0.0"
+	DefaultAlgorithm 	string		// Default encryption algorithm, e.g., "AES-256-GCM"
+	KeyRotationInterval int			// Key rotation interval in days
+	MaxKeyVersions 		int			// Maximum number of key versions to retain
+	DisabledDecryption 	bool		// Decrypt data with disabled keys
+	
 }
 
-func NewEngine(store KeyStore) *Engine {
+
+type Engine struct {
+	storage KeyStore
+	crypto Crypto
+	cfg EngineConfig
+}
+
+func NewEngine(storage KeyStore, crypto Crypto, cfg EngineConfig) *Engine {
 	return &Engine{
-		store: store,
+		storage: storage,
+		crypto: crypto,
+		cfg: cfg,
 	}
 }
 
