@@ -161,8 +161,14 @@ func (s *BoltStore) UpdateKey(keyMeta core.KeyMetadata) error {
 	})}
 
 func (s *BoltStore) DeleteKey(keyID string) error {
-	// implement deleting key metadata from BoltDB
-	return nil
+	
+	return s.db.Update(func (tx *bbolt.Tx) error{
+		bucket := tx.Bucket([]byte(keyMetaBucket))
+		if bucket == nil {
+			return fmt.Errorf("Bucket %s not found", keyMetaBucket)
+		}
+		return bucket.Delete([]byte(keyID))
+	})
 }
 
 func (s *BoltStore) SaveVersion(keyID string, version core.KeyVersion) error {
