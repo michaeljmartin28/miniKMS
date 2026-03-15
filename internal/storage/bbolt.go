@@ -203,8 +203,31 @@ func (s *BoltStore) SaveVersion(keyID string, version core.KeyVersion) error {
 }
 
 func (s *BoltStore) GetVersion(keyID string, version int) (core.KeyVersion, error) {
-	// implement retrieving a specific key version from BoltDB
-	return core.KeyVersion{}, nil
+	
+
+	var result core.KeyVersion
+
+	err := s.db.View(func (tx *bbolt.Tx)  error{
+		bucket := tx.Bucket([]byte(keyVersionsBucket))
+		if bucket == nil {
+			return  fmt.Errorf("bucket %s not found", keyVersionsBucket)
+		} 
+
+		val := bucket.Get([]byte(fmt.Sprintf("%s:%d", keyID, version)))
+		if val == nil {
+			return fmt.Errorf("version %d for key %s not found", version, keyID)
+		}
+		meta, err := deserializeKeyVersion(val)
+		if err != nil {
+			return err
+		}
+		result = meta
+		return nil
+	})
+	if err != nil {
+		return core.KeyVersion{}, err
+	}
+	return result, nil
 }
 
 func (s *BoltStore) ListVersions(keyID string) ([]core.KeyVersion, error) {
