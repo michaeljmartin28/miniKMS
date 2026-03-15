@@ -146,6 +146,48 @@ func (e *Engine) DecryptDataKey(ctx context.Context, req DecryptDataKeyRequest) 
 }
 
 func (e *Engine) RotateKey(ctx context.Context, keyID string) (int, error) {
-	// TODO: implement
-	return 0, nil
+
+	// Get the metadata for a key
+	keyMetadata, err := e.Storage.GetKey(keyID)
+	if err != nil {
+		return -1, err
+	}
+
+	// Ensure we are allowed to rotate it
+	if keyMetadata.State == Disabled {
+		return -1, fmt.Errorf("key is disabled - cannot rotate")
+	}
+	// TODO: maybe add another state, pending deletion
+
+	// TODO: Add maxVersion controls. (0 == infinite, otherwise if we hit the max, delete the oldest or reject the request.)
+
+	// Generate new key material
+	newKey, err := e.Crypto.GenerateKey(keyMetadata.Algorithm)
+	if err != nil {
+		return -1, err
+	}
+
+	// Create a new version
+	newVersion := KeyVersion{
+		Version:   keyMetadata.LatestVersion + 1,
+		CreatedAt: time.Now(),
+		Material:  newKey,
+	}
+
+	// Store the new version
+	err = e.Storage.SaveVersion(keyMetadata.KeyID, newVersion)
+	if err != nil {
+		return -1, err
+	}
+
+	// Now that we were able to store the new version, update the key metadata to match the newest version
+	keyMetadata.LatestVersion++
+
+	err = e.Storage.UpdateKey(keyMetadata)
+	if err != nil {
+		return -1, err
+	}
+
+	return keyMetadata.LatestVersion, nil
+
 }
