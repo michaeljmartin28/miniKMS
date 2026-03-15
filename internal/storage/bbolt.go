@@ -71,11 +71,8 @@ func (s *BoltStore) Close() error {
 
 
 func serializeKeyMetadata(meta core.KeyMetadata) ([]byte, error) {
-	data, err := json.Marshal(meta)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
+	return json.Marshal(meta)
+
 }
 
 func deserializeKeyMetadata(data []byte) (core.KeyMetadata, error) {
@@ -88,11 +85,7 @@ func deserializeKeyMetadata(data []byte) (core.KeyMetadata, error) {
 }
 
 func serializeKeyVersion(version core.KeyVersion) ([]byte, error) {
-	data, err := json.Marshal(version)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
+	return json.Marshal(version)
 }
 
 func deserializeKeyVersion(data []byte) (core.KeyVersion, error) {
@@ -190,9 +183,23 @@ func (s *BoltStore) DeleteKey(keyID string) error {
 
 func (s *BoltStore) SaveVersion(keyID string, version core.KeyVersion) error {
 	
-	
+	return s.db.Update( func(tx *bbolt.Tx) error{
+		bucket := tx.Bucket([]byte(keyVersionsBucket))
+		if bucket == nil {
+			return fmt.Errorf("Bucket %s not found", keyVersionsBucket)
+		}
 
-	return nil
+		// Use a composite key of "keyID:version" to store each version
+		compositeKey := fmt.Sprintf("%s:%d", keyID, version.Version)
+		data, err := serializeKeyVersion(version)
+		if err != nil {
+			return err
+		}
+
+		return bucket.Put([]byte(compositeKey), data)
+
+	})
+
 }
 
 func (s *BoltStore) GetVersion(keyID string, version int) (core.KeyVersion, error) {
