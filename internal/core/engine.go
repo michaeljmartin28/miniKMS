@@ -54,7 +54,7 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 		KeyID:         uuid.New().String(),
 		CreatedAt:     keyVersion.CreatedAt,
 		Algorithm:     req.Algorithm,
-		State:         Enabled,
+		State:         KeyStateEnabled,
 		LatestVersion: version,
 	}
 
@@ -79,16 +79,12 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 
 func (e *Engine) Encrypt(ctx context.Context, req EncryptRequest) (*EncryptResponse, error) {
 
-	if req.Plaintext == nil || len(req.Plaintext) == 0 {
-		return nil, fmt.Errorf("the encrypt request did not include any plaintext to encrypt")
-	}
-
 	keyMetadata, err := e.Storage.GetKey(req.KeyID)
 	if err != nil {
 		return nil, err
 	}
 
-	if keyMetadata.State == Disabled {
+	if keyMetadata.State.IsDisabled() {
 		return nil, fmt.Errorf("key is disabled, cannot complete request")
 	}
 
@@ -115,16 +111,12 @@ func (e *Engine) Encrypt(ctx context.Context, req EncryptRequest) (*EncryptRespo
 
 func (e *Engine) Decrypt(ctx context.Context, req DecryptRequest) (*DecryptResponse, error) {
 
-	if req.Ciphertext == nil || len(req.Ciphertext) == 0 {
-		return nil, fmt.Errorf("the request must include the ciphertext to decrypt")
-	}
-
 	keyMetadata, err := e.Storage.GetKey(req.KeyID)
 	if err != nil {
 		return nil, err
 	}
 
-	if keyMetadata.State == Disabled && !e.Cfg.AllowDecryptDisabled {
+	if keyMetadata.State.IsDisabled() && !e.Cfg.AllowDecryptDisabled {
 		return nil, fmt.Errorf("the key is disabled and decryption is not allowed for this key")
 	}
 
@@ -144,8 +136,40 @@ func (e *Engine) Decrypt(ctx context.Context, req DecryptRequest) (*DecryptRespo
 }
 
 func (e *Engine) GenerateDataKey(ctx context.Context, req GenerateDataKeyRequest) (*GenerateDataKeyResponse, error) {
-	// TODO: implement
-	return &GenerateDataKeyResponse{}, nil
+
+	keyMetadata, err := e.Storage.GetKey(req.KeyID)
+	if err != nil {
+		return nil, err
+	}
+
+	if keyMetadata.State.IsDisabled() {
+		return nil, fmt.Errorf("key is currently disabled and cannot be used to create a DEK")
+	}
+
+	// DEK uses the same algorithm as the KEK
+	dek, err := e.Crypto.GenerateKey(keyMetadata.Algorithm)
+	if err != nil {
+		return nil, err
+	}
+
+	encryptResp, err := e.Encrypt(
+		ctx,
+		EncryptRequest{
+			KeyID:     keyMetadata.KeyID,
+			Plaintext: dek, AdditionalData: req.AdditionalData,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	response := GenerateDataKeyResponse{
+		PlaintextDEK: dek,
+		EncryptedDEK: encryptResp.Ciphertext,
+		Version:      encryptResp.Version,
+	}
+
+	return &response, nil
 }
 
 func (e *Engine) DecryptDataKey(ctx context.Context, req DecryptDataKeyRequest) (*DecryptDataKeyResponse, error) {
@@ -162,7 +186,7 @@ func (e *Engine) RotateKey(ctx context.Context, keyID string) (int, error) {
 	}
 
 	// Ensure we are allowed to rotate it
-	if keyMetadata.State == Disabled {
+	if keyMetadata.State.IsDisabled() {
 		return -1, fmt.Errorf("key is disabled - cannot rotate")
 	}
 	// TODO: maybe add another state, pending deletion

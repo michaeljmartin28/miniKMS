@@ -40,19 +40,21 @@ type DecryptResponse struct {
 }
 
 type GenerateDataKeyRequest struct {
-	KeyID string
+	KeyID          string
+	AdditionalData []byte
 }
 
 type GenerateDataKeyResponse struct {
-	PlaintextDataKey []byte
-	EncryptedDataKey []byte
-	Version          int
+	PlaintextDEK []byte
+	EncryptedDEK []byte
+	Version      int
 }
 
 type DecryptDataKeyRequest struct {
-	KeyID            string
-	EncryptedDataKey []byte
-	Version          int
+	KeyID          string
+	EncryptedDEK   []byte
+	Version        int
+	AdditionalData []byte
 }
 
 type DecryptDataKeyResponse struct {
