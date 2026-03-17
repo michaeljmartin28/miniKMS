@@ -173,8 +173,25 @@ func (e *Engine) GenerateDataKey(ctx context.Context, req GenerateDataKeyRequest
 }
 
 func (e *Engine) DecryptDataKey(ctx context.Context, req DecryptDataKeyRequest) (*DecryptDataKeyResponse, error) {
-	// TODO: implement
-	return &DecryptDataKeyResponse{}, nil
+
+	decResp, err := e.Decrypt(
+		ctx,
+		DecryptRequest{
+			KeyID:          req.KeyID,
+			Ciphertext:     req.EncryptedDEK,
+			AdditionalData: req.AdditionalData,
+			Version:        req.Version,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	response := DecryptDataKeyResponse{
+		PlaintextDEK: decResp.Plaintext,
+	}
+
+	return &response, nil
 }
 
 func (e *Engine) RotateKey(ctx context.Context, keyID string) (int, error) {

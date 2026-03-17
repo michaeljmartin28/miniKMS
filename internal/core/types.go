@@ -58,5 +58,5 @@ type DecryptDataKeyRequest struct {
 }
 
 type DecryptDataKeyResponse struct {
-	PlaintextDataKey []byte
+	PlaintextDEK []byte
 }
