@@ -41,8 +41,8 @@ func TestCreateKey(t *testing.T) {
 		t.Fatalf("expected Algorithm=%s, got %s", core.AES256GCM, meta.Algorithm)
 	}
 
-	if meta.State != core.Enabled {
-		t.Fatalf("expected State=%s, got %s", core.Enabled, meta.State)
+	if meta.State != core.KeyStateEnabled {
+		t.Fatalf("expected State=%s, got %s", core.KeyStateEnabled, meta.State)
 	}
 
 }
@@ -104,3 +104,130 @@ func TestEncryptDecrypt(t *testing.T) {
 		t.Fatalf("expected decrypted=%s, got %s", plaintext, decryptResponse.Plaintext)
 	}
 }
+
+func TestGenerateAndDecryptDataKey(t *testing.T) {
+	t.Parallel()
+
+	ctx := context.Background()
+	eng, cleanup := newTestEngine(t)
+	defer cleanup()
+
+	// Create KEK
+	createResp, err := eng.CreateKey(ctx, core.CreateKeyRequest{
+		Name:      "kek",
+		Algorithm: core.AES256GCM,
+	})
+	if err != nil {
+		t.Fatalf("CreateKey: %v", err)
+	}
+
+	// Generate DEK
+	aad := []byte("test-aad")
+	genResp, err := eng.GenerateDataKey(ctx, core.GenerateDataKeyRequest{
+		KeyID:          createResp.KeyID,
+		AdditionalData: aad,
+	})
+	if err != nil {
+		t.Fatalf("GenerateDataKey: %v", err)
+	}
+
+	if len(genResp.PlaintextDEK) != 32 {
+		t.Fatalf("expected 32-byte DEK, got %d", len(genResp.PlaintextDEK))
+	}
+	if len(genResp.EncryptedDEK) == 0 {
+		t.Fatalf("expected non-empty EncryptedDEK")
+	}
+
+	// Decrypt DEK
+	decResp, err := eng.DecryptDataKey(ctx, core.DecryptDataKeyRequest{
+		KeyID:          createResp.KeyID,
+		EncryptedDEK:   genResp.EncryptedDEK,
+		AdditionalData: aad,
+		Version:        genResp.Version,
+	})
+	if err != nil {
+		t.Fatalf("DecryptDataKey: %v", err)
+	}
+
+	// Assert equality
+	if !bytes.Equal(decResp.PlaintextDEK, genResp.PlaintextDEK) {
+		t.Fatalf("DEK mismatch")
+	}
+}
+
+func TestDecryptDataKey_WrongAADFails(t *testing.T) {
+	t.Parallel()
+
+	ctx := context.Background()
+	eng, cleanup := newTestEngine(t)
+	defer cleanup()
+
+	createResp, _ := eng.CreateKey(ctx, core.CreateKeyRequest{
+		Name:      "kek",
+		Algorithm: core.AES256GCM,
+	})
+
+	genResp, _ := eng.GenerateDataKey(ctx, core.GenerateDataKeyRequest{
+		KeyID:          createResp.KeyID,
+		AdditionalData: []byte("good"),
+	})
+
+	_, err := eng.DecryptDataKey(ctx, core.DecryptDataKeyRequest{
+		KeyID:          createResp.KeyID,
+		EncryptedDEK:   genResp.EncryptedDEK,
+		AdditionalData: []byte("bad"),
+		Version:        genResp.Version,
+	})
+
+	if err == nil {
+		t.Fatalf("expected error when decrypting with wrong AAD")
+	}
+}
+
+// func TestDecryptDataKey_DisabledKeyBehavior(t *testing.T) {
+//     t.Parallel()
+
+//     ctx := context.Background()
+//     eng, cleanup := newTestEngine(t)
+//     defer cleanup()
+
+//     createResp, _ := eng.CreateKey(ctx, core.CreateKeyRequest{
+//         Name:      "kek",
+//         Algorithm: core.AES256GCM,
+//     })
+
+//     genResp, _ := eng.GenerateDataKey(ctx, core.GenerateDataKeyRequest{
+//         KeyID: createResp.KeyID,
+//     })
+
+//     // Disable key
+//     eng.Storage.UpdateKeyState(createResp.KeyID, core.KeyStateDisabled)
+
+//     t.Run("disallowed", func(t *testing.T) {
+//         eng.Cfg.AllowDecryptDisabled = false
+
+//         _, err := eng.DecryptDataKey(ctx, core.DecryptDataKeyRequest{
+//             KeyID:        createResp.KeyID,
+//             EncryptedDEK: genResp.EncryptedDEK,
+//             Version:      genResp.Version,
+//         })
+
+//         if err == nil {
+//             t.Fatalf("expected error when decrypting with disabled key")
+//         }
+//     })
+
+//     t.Run("allowed", func(t *testing.T) {
+//         eng.Cfg.AllowDecryptDisabled = true
+
+//         _, err := eng.DecryptDataKey(ctx, core.DecryptDataKeyRequest{
+//             KeyID:        createResp.KeyID,
+//             EncryptedDEK: genResp.EncryptedDEK,
+//             Version:      genResp.Version,
+//         })
+
+//         if err != nil {
+//             t.Fatalf("unexpected error: %v", err)
+//         }
+//     })
+// }

@@ -5,28 +5,36 @@ import "time"
 // KeyMetadata represents the metadata associated with a key, including its unique identifier,
 // creation time, and current state.
 type KeyMetadata struct {
-	KeyID     		string
-	CreatedAt 		time.Time
-	State	 		KeyState 
-	Algorithm 		Algorithm
-	LatestVersion 	int
+	KeyID         string
+	CreatedAt     time.Time
+	State         KeyState
+	Algorithm     Algorithm
+	LatestVersion int
 }
 
-// KeyVersion represents a specific version of a key, including its version number, 
+// KeyVersion represents a specific version of a key, including its version number,
 // creation time, and the key material.
 type KeyVersion struct {
-	Version   	int
-	CreatedAt 	time.Time
-	Material 	[]byte
+	Version   int
+	CreatedAt time.Time
+	Material  []byte
 }
 
+//
 type KeyState string
 
-const (
-	Enabled 	KeyState = "ENABLED"
-	Disabled 	KeyState = "DISABLED"
-)
+func (s KeyState) IsEnabled() bool {
+	return s == KeyStateEnabled
+}
 
+func (s KeyState) IsDisabled() bool {
+	return s == KeyStateDisabled
+}
+
+const (
+	KeyStateEnabled  KeyState = "ENABLED"
+	KeyStateDisabled KeyState = "DISABLED"
+)
 
 type KeyStore interface {
 	// Metadata operations
