@@ -41,8 +41,8 @@ func TestCreateKey(t *testing.T) {
 		t.Fatalf("expected Algorithm=%s, got %s", core.AES256GCM, meta.Algorithm)
 	}
 
-	if meta.State != core.Enabled {
-		t.Fatalf("expected State=%s, got %s", core.Enabled, meta.State)
+	if meta.State != core.KeyStateEnabled {
+		t.Fatalf("expected State=%s, got %s", core.KeyStateEnabled, meta.State)
 	}
 
 }
