@@ -240,3 +240,39 @@ func (e *Engine) RotateKey(ctx context.Context, keyID string) (int, error) {
 	return keyMetadata.LatestVersion, nil
 
 }
+
+func (e *Engine) DisableKey(ctx context.Context, keyID string) (*KeyMetadata, error) {
+
+	keyMetadata, err := e.Storage.GetKey(keyID)
+	if err != nil {
+		return nil, err
+	}
+
+	if keyMetadata.State.IsDisabled() {
+		return nil, fmt.Errorf("key is already disabled")
+	}
+
+	keyMetadata.State = KeyStateDisabled
+	err = e.Storage.SaveKey(keyMetadata)
+	if err != nil {
+		return nil, err
+	}
+	return &keyMetadata, nil
+}
+
+func (e *Engine) EnableKey(ctx context.Context, keyID string) (*KeyMetadata, error) {
+	keyMetadata, err := e.Storage.GetKey(keyID)
+	if err != nil {
+		return nil, err
+	}
+
+	if keyMetadata.State.IsEnabled() {
+		return nil, fmt.Errorf("key is already enabled")
+	}
+	keyMetadata.State = KeyStateEnabled
+	err = e.Storage.SaveKey(keyMetadata)
+	if err != nil {
+		return nil, err
+	}
+	return &keyMetadata, nil
+}

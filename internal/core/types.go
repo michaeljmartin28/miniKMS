@@ -60,3 +60,19 @@ type DecryptDataKeyRequest struct {
 type DecryptDataKeyResponse struct {
 	PlaintextDEK []byte
 }
+
+type DisableKeyRequest struct {
+	KeyID string
+}
+
+type DisableKeyResponse struct {
+	KeyMetadata KeyMetadata
+}
+
+type EnableKeyRequest struct {
+	KeyID string
+}
+
+type EnableKeyResponse struct {
+	KeyMetadata KeyMetadata
+}
