@@ -1,6 +1,16 @@
 package http
 
-import "net/http"
+import (
+	"log"
+	"net/http"
+)
+
+func LoggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("%s %s", r.Method, r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
+}
 
 func NewRouter(h *Handler) http.Handler {
 	mux := http.NewServeMux()
@@ -14,5 +24,5 @@ func NewRouter(h *Handler) http.Handler {
 	mux.HandleFunc("POST /keys/{id}/decrypt-data-key", h.DecryptDataKey)
 	mux.HandleFunc("POST /keys/{id}/rotate", h.RotateKey)
 
-	return mux
+	return LoggingMiddleware(mux)
 }
