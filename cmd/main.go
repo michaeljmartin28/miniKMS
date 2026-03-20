@@ -2,12 +2,14 @@ package main
 
 import (
 	"log"
+
 	netHttp "net/http"
 
 	"github.com/michaeljmartin28/minikms/internal/config"
 	"github.com/michaeljmartin28/minikms/internal/core"
 	"github.com/michaeljmartin28/minikms/internal/crypto"
 	"github.com/michaeljmartin28/minikms/internal/storage"
+	"github.com/michaeljmartin28/minikms/internal/transport/http"
 )
 
 func main() {
@@ -38,6 +40,9 @@ func main() {
 
 	log.Printf("Engine initialized with config: %+v\n", engine.Cfg)
 
-	netHttp.ListenAndServe(":8080", nil)
+	httpHandler := http.NewHandler(engine)
+	httpMux := http.NewRouter(httpHandler)
+
+	log.Fatal(netHttp.ListenAndServe(":8080", httpMux))
 
 }
