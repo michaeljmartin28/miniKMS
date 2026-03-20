@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	netHttp "net/http"
 
 	"github.com/michaeljmartin28/minikms/internal/config"
 	"github.com/michaeljmartin28/minikms/internal/core"
@@ -36,5 +37,7 @@ func main() {
 	)
 
 	log.Printf("Engine initialized with config: %+v\n", engine.Cfg)
+
+	netHttp.ListenAndServe(":8080", nil)
 
 }
