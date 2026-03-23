@@ -119,6 +119,7 @@ func (h *Handler) Decrypt(w http.ResponseWriter, r *http.Request) {
 		KeyID:          keyID,
 		Ciphertext:     []byte(req.Ciphertext),
 		AdditionalData: []byte(req.AdditionalData),
+		Version:        req.Version,
 	}
 
 	resp, err := h.Engine.Decrypt(ctx, decryptRequest)
@@ -128,6 +129,66 @@ func (h *Handler) Decrypt(w http.ResponseWriter, r *http.Request) {
 	}
 	WriteJSON(w, http.StatusOK, resp)
 }
-func (h *Handler) GenerateDataKey(w http.ResponseWriter, r *http.Request) {}
-func (h *Handler) DecryptDataKey(w http.ResponseWriter, r *http.Request)  {}
-func (h *Handler) RotateKey(w http.ResponseWriter, r *http.Request)       {}
+func (h *Handler) GenerateDataKey(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	keyID := r.PathValue("id")
+
+	var req GenerateDataKeyRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		WriteError(w, ErrBadJson)
+		return
+	}
+
+	genDEKRequest := core.GenerateDataKeyRequest{
+		KeyID:          keyID,
+		AdditionalData: []byte(req.AdditionalData),
+	}
+
+	resp, err := h.Engine.GenerateDataKey(ctx, genDEKRequest)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
+	WriteJSON(w, http.StatusOK, resp)
+}
+func (h *Handler) DecryptDataKey(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	keyID := r.PathValue("id")
+
+	var req DecryptDataKeyRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		WriteError(w, ErrBadJson)
+		return
+	}
+
+	decryptDEKRequest := core.DecryptDataKeyRequest{
+		KeyID:          keyID,
+		EncryptedDEK:   []byte(req.EncryptedDEK),
+		Version:        req.Version,
+		AdditionalData: []byte(req.AdditionalData),
+	}
+
+	resp, err := h.Engine.DecryptDataKey(ctx, decryptDEKRequest)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
+	WriteJSON(w, http.StatusOK, resp)
+}
+func (h *Handler) RotateKey(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	keyID := r.PathValue("id")
+
+	version, err := h.Engine.RotateKey(ctx, keyID)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
+
+	resp := RotateKeyResponse{Version: version}
+
+	WriteJSON(w, http.StatusOK, resp)
+}
