@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package kms.v1;
+
+option go_package = "github.com/michaeljmartin28/minikms/gen/kms/v1;kmsv1";
+
+// -----------------------------
+// Messages
+// -----------------------------
+
+message EncryptRequest {
+    string key_id = 1;
+    bytes plaintext = 2;
+    bytes additional_data = 3;
+}
+
+message EncryptResponse {
+    bytes ciphertext = 1;
+    uint32 version = 2;
+}
+
+message DecryptRequest {
+    string key_id = 1;
+    bytes ciphertext = 2;
+    bytes additional_data = 3;
+    uint32 version = 4;
+}
+
+message DecryptResponse {
+    bytes plaintext = 1;
+}
+
+message GenerateDataKeyRequest {
+    string key_id = 1;
+    bytes additional_data = 2;
+}
+
+message GenerateDataKeyResponse {
+    bytes plaintext = 1;
+    bytes encrypted_dek = 2;
+    uint32 version = 3;
+}
+
+message DecryptDataKeyRequest {
+    string key_id = 1;
+    bytes encrypted_dek = 2;
+    bytes additional_data = 3;
+    uint32 version = 4;
+}
+
+message DecryptDataKeyResponse {
+    bytes plaintext = 1;
+}
+
+message RotateKeyRequest {
+    string key_id = 1;
+}
+
+message RotateKeyResponse {
+    uint32 version = 1;
+}
+
+message EnableKeyRequest {
+    string key_id = 1;
+}
+
+message DisableKeyRequest {
+    string key_id = 1;
+}
+
+message KeyMetadata {
+    string key_id = 1;
+    bool enabled = 2;
+    uint32 latest_version = 3;
+}
+
+// -----------------------------
+// Service
+// -----------------------------
+
+service KMS {
+    rpc Encrypt(EncryptRequest) returns (EncryptResponse);
+    rpc Decrypt(DecryptRequest) returns (DecryptResponse);
+
+    rpc GenerateDataKey(GenerateDataKeyRequest) returns (GenerateDataKeyResponse);
+    rpc DecryptDataKey(DecryptDataKeyRequest) returns (DecryptDataKeyResponse);
+
+    rpc RotateKey(RotateKeyRequest) returns (RotateKeyResponse);
+
+    rpc EnableKey(EnableKeyRequest) returns (KeyMetadata);
+    rpc DisableKey(DisableKeyRequest) returns (KeyMetadata);
+}
