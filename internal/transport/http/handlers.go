@@ -79,8 +79,55 @@ func (h *Handler) DisableKey(w http.ResponseWriter, r *http.Request) {
 
 	WriteJSON(w, http.StatusOK, meta)
 }
-func (h *Handler) Encrypt(w http.ResponseWriter, r *http.Request)         {}
-func (h *Handler) Decrypt(w http.ResponseWriter, r *http.Request)         {}
+func (h *Handler) Encrypt(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	keyID := r.PathValue("id")
+
+	var req EncryptRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		WriteError(w, ErrBadJson)
+		return
+	}
+
+	encryptRequest := core.EncryptRequest{
+		KeyID:          keyID,
+		Plaintext:      []byte(req.Plaintext),
+		AdditionalData: []byte(req.AdditionalData),
+	}
+
+	resp, err := h.Engine.Encrypt(ctx, encryptRequest)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
+	WriteJSON(w, http.StatusOK, resp)
+
+}
+func (h *Handler) Decrypt(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	keyID := r.PathValue("id")
+
+	var req DecryptRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		WriteError(w, ErrBadJson)
+		return
+	}
+
+	decryptRequest := core.DecryptRequest{
+		KeyID:          keyID,
+		Ciphertext:     []byte(req.Ciphertext),
+		AdditionalData: []byte(req.AdditionalData),
+	}
+
+	resp, err := h.Engine.Decrypt(ctx, decryptRequest)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
+	WriteJSON(w, http.StatusOK, resp)
+}
 func (h *Handler) GenerateDataKey(w http.ResponseWriter, r *http.Request) {}
 func (h *Handler) DecryptDataKey(w http.ResponseWriter, r *http.Request)  {}
 func (h *Handler) RotateKey(w http.ResponseWriter, r *http.Request)       {}
