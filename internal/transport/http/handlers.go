@@ -53,8 +53,32 @@ func (h *Handler) CreateKey(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, http.StatusCreated, response)
 }
 
-func (h *Handler) EnableKey(w http.ResponseWriter, r *http.Request)       {}
-func (h *Handler) DisableKey(w http.ResponseWriter, r *http.Request)      {}
+func (h *Handler) EnableKey(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	keyID := r.PathValue("id")
+
+	meta, err := h.Engine.EnableKey(ctx, keyID)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, meta)
+}
+func (h *Handler) DisableKey(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	keyID := r.PathValue("id")
+
+	meta, err := h.Engine.DisableKey(ctx, keyID)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, meta)
+}
 func (h *Handler) Encrypt(w http.ResponseWriter, r *http.Request)         {}
 func (h *Handler) Decrypt(w http.ResponseWriter, r *http.Request)         {}
 func (h *Handler) GenerateDataKey(w http.ResponseWriter, r *http.Request) {}
