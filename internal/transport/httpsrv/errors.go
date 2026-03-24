@@ -4,15 +4,19 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"github.com/michaeljmartin28/minikms/internal/core"
 )
 
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-var ErrBadJson = errors.New("invalid json in request")
-var ErrMissingFields = errors.New("missing fields in request")
-var ErrBadAlgorithm = errors.New("unsupported algorithm chosen")
+var (
+	ErrBadJSON       = errors.New("invalid json")
+	ErrMissingFields = errors.New("missing required fields")
+	ErrBadMethod     = errors.New("invalid http method")
+)
 
 func WriteError(w http.ResponseWriter, err error) {
 	w.Header().Set("Content-Type", "application/json")
@@ -22,12 +26,17 @@ func WriteError(w http.ResponseWriter, err error) {
 
 func statusFromError(err error) int {
 	switch {
-
-	case errors.Is(err, ErrBadJson),
+	case errors.Is(err, ErrBadJSON),
 		errors.Is(err, ErrMissingFields),
-		errors.Is(err, ErrBadAlgorithm):
+		errors.Is(err, core.ErrBadAlgorithm),
+		errors.Is(err, core.ErrInvalidVersion):
 		return http.StatusBadRequest
-
+	case errors.Is(err, ErrBadMethod):
+		return http.StatusMethodNotAllowed
+	case errors.Is(err, core.ErrKeyNotFound):
+		return http.StatusNotFound
+	case errors.Is(err, core.ErrKeyDisabled):
+		return http.StatusConflict
 	default:
 		return http.StatusInternalServerError
 	}
