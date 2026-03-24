@@ -8,6 +8,17 @@ option go_package = "github.com/michaeljmartin28/minikms/gen/kms/v1;kmsv1";
 // Messages
 // -----------------------------
 
+message CreateKeyRequest{
+    string algorithm = 1;
+    string name = 2;
+}
+
+message CreateKeyResponse{
+    string key_id = 1;
+    uint32 version = 2;
+    string created_at = 3;
+}
+
 message EncryptRequest {
     string key_id = 1;
     bytes plaintext = 2;
@@ -70,8 +81,10 @@ message DisableKeyRequest {
 
 message KeyMetadata {
     string key_id = 1;
-    bool enabled = 2;
-    uint32 latest_version = 3;
+    string created_at = 2;
+    bool enabled = 3;
+    uint32 latest_version = 4;
+    string algorithm = 5;
 }
 
 // -----------------------------
@@ -79,6 +92,9 @@ message KeyMetadata {
 // -----------------------------
 
 service KMS {
+
+    rpc CreateKey(CreateKeyRequest) returns (CreateKeyResponse);
+    
     rpc Encrypt(EncryptRequest) returns (EncryptResponse);
     rpc Decrypt(DecryptRequest) returns (DecryptResponse);
 

@@ -1,15 +1,23 @@
 package main
 
 import (
+	"context"
 	"log"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
 
-	netHttp "net/http"
+	"net/http"
 
+	kmsv1 "github.com/michaeljmartin28/minikms/gen/kms/v1"
 	"github.com/michaeljmartin28/minikms/internal/config"
 	"github.com/michaeljmartin28/minikms/internal/core"
 	"github.com/michaeljmartin28/minikms/internal/crypto"
 	"github.com/michaeljmartin28/minikms/internal/storage"
-	"github.com/michaeljmartin28/minikms/internal/transport/http"
+	"github.com/michaeljmartin28/minikms/internal/transport/grpcsrv"
+	"github.com/michaeljmartin28/minikms/internal/transport/httpsrv"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -40,9 +48,46 @@ func main() {
 
 	log.Printf("Engine initialized with config: %+v\n", engine.Cfg)
 
-	httpHandler := http.NewHandler(engine)
-	httpMux := http.NewRouter(httpHandler)
+	// Set up the HTTP server
 
-	log.Fatal(netHttp.ListenAndServe(":8080", httpMux))
+	httpHandler := httpsrv.NewHandler(engine)
+	httpMux := httpsrv.NewRouter(httpHandler)
+
+	httpServer := &http.Server{
+		Addr:    ":8080",
+		Handler: httpMux,
+	}
+
+	// Set up the gRPC Server
+
+	grpcServer := grpc.NewServer()
+	kmsv1.RegisterKMSServer(grpcServer, grpcsrv.NewGRPCServer(engine))
+	listener, err := net.Listen("tcp", ":9090")
+	if err != nil {
+		log.Fatalf("failed to start listener: %v", err)
+	}
+
+	go func() {
+		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("http server error: %v", err)
+		}
+	}()
+
+	go func() {
+		if err := grpcServer.Serve(listener); err != nil {
+			log.Fatalf("grpc server error: %v", err)
+		}
+	}()
+
+	func() {
+		sigs := make(chan os.Signal, 1)
+
+		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+		<-sigs
+	}()
+
+	httpServer.Shutdown(context.Background())
+	grpcServer.GracefulStop()
 
 }

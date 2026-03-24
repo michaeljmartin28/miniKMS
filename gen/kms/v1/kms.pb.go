@@ -7,11 +7,12 @@
 package kmsv1
 
 import (
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -20,6 +21,118 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
+
+type CreateKeyRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Algorithm     string                 `protobuf:"bytes,1,opt,name=algorithm,proto3" json:"algorithm,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateKeyRequest) Reset() {
+	*x = CreateKeyRequest{}
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateKeyRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateKeyRequest) ProtoMessage() {}
+
+func (x *CreateKeyRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateKeyRequest.ProtoReflect.Descriptor instead.
+func (*CreateKeyRequest) Descriptor() ([]byte, []int) {
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *CreateKeyRequest) GetAlgorithm() string {
+	if x != nil {
+		return x.Algorithm
+	}
+	return ""
+}
+
+func (x *CreateKeyRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type CreateKeyResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	KeyId         string                 `protobuf:"bytes,1,opt,name=key_id,json=keyId,proto3" json:"key_id,omitempty"`
+	Version       uint32                 `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateKeyResponse) Reset() {
+	*x = CreateKeyResponse{}
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateKeyResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateKeyResponse) ProtoMessage() {}
+
+func (x *CreateKeyResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateKeyResponse.ProtoReflect.Descriptor instead.
+func (*CreateKeyResponse) Descriptor() ([]byte, []int) {
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *CreateKeyResponse) GetKeyId() string {
+	if x != nil {
+		return x.KeyId
+	}
+	return ""
+}
+
+func (x *CreateKeyResponse) GetVersion() uint32 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *CreateKeyResponse) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
 
 type EncryptRequest struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
@@ -32,7 +145,7 @@ type EncryptRequest struct {
 
 func (x *EncryptRequest) Reset() {
 	*x = EncryptRequest{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[0]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +157,7 @@ func (x *EncryptRequest) String() string {
 func (*EncryptRequest) ProtoMessage() {}
 
 func (x *EncryptRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[0]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +170,7 @@ func (x *EncryptRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EncryptRequest.ProtoReflect.Descriptor instead.
 func (*EncryptRequest) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{0}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *EncryptRequest) GetKeyId() string {
@@ -91,7 +204,7 @@ type EncryptResponse struct {
 
 func (x *EncryptResponse) Reset() {
 	*x = EncryptResponse{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[1]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -103,7 +216,7 @@ func (x *EncryptResponse) String() string {
 func (*EncryptResponse) ProtoMessage() {}
 
 func (x *EncryptResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[1]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -116,7 +229,7 @@ func (x *EncryptResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EncryptResponse.ProtoReflect.Descriptor instead.
 func (*EncryptResponse) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{1}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *EncryptResponse) GetCiphertext() []byte {
@@ -145,7 +258,7 @@ type DecryptRequest struct {
 
 func (x *DecryptRequest) Reset() {
 	*x = DecryptRequest{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[2]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -157,7 +270,7 @@ func (x *DecryptRequest) String() string {
 func (*DecryptRequest) ProtoMessage() {}
 
 func (x *DecryptRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[2]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -170,7 +283,7 @@ func (x *DecryptRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DecryptRequest.ProtoReflect.Descriptor instead.
 func (*DecryptRequest) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{2}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *DecryptRequest) GetKeyId() string {
@@ -210,7 +323,7 @@ type DecryptResponse struct {
 
 func (x *DecryptResponse) Reset() {
 	*x = DecryptResponse{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[3]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -222,7 +335,7 @@ func (x *DecryptResponse) String() string {
 func (*DecryptResponse) ProtoMessage() {}
 
 func (x *DecryptResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[3]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -235,7 +348,7 @@ func (x *DecryptResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DecryptResponse.ProtoReflect.Descriptor instead.
 func (*DecryptResponse) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{3}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *DecryptResponse) GetPlaintext() []byte {
@@ -255,7 +368,7 @@ type GenerateDataKeyRequest struct {
 
 func (x *GenerateDataKeyRequest) Reset() {
 	*x = GenerateDataKeyRequest{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[4]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -267,7 +380,7 @@ func (x *GenerateDataKeyRequest) String() string {
 func (*GenerateDataKeyRequest) ProtoMessage() {}
 
 func (x *GenerateDataKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[4]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -280,7 +393,7 @@ func (x *GenerateDataKeyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenerateDataKeyRequest.ProtoReflect.Descriptor instead.
 func (*GenerateDataKeyRequest) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{4}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GenerateDataKeyRequest) GetKeyId() string {
@@ -308,7 +421,7 @@ type GenerateDataKeyResponse struct {
 
 func (x *GenerateDataKeyResponse) Reset() {
 	*x = GenerateDataKeyResponse{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[5]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -320,7 +433,7 @@ func (x *GenerateDataKeyResponse) String() string {
 func (*GenerateDataKeyResponse) ProtoMessage() {}
 
 func (x *GenerateDataKeyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[5]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -333,7 +446,7 @@ func (x *GenerateDataKeyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenerateDataKeyResponse.ProtoReflect.Descriptor instead.
 func (*GenerateDataKeyResponse) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{5}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GenerateDataKeyResponse) GetPlaintext() []byte {
@@ -369,7 +482,7 @@ type DecryptDataKeyRequest struct {
 
 func (x *DecryptDataKeyRequest) Reset() {
 	*x = DecryptDataKeyRequest{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[6]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -381,7 +494,7 @@ func (x *DecryptDataKeyRequest) String() string {
 func (*DecryptDataKeyRequest) ProtoMessage() {}
 
 func (x *DecryptDataKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[6]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -394,7 +507,7 @@ func (x *DecryptDataKeyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DecryptDataKeyRequest.ProtoReflect.Descriptor instead.
 func (*DecryptDataKeyRequest) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{6}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *DecryptDataKeyRequest) GetKeyId() string {
@@ -434,7 +547,7 @@ type DecryptDataKeyResponse struct {
 
 func (x *DecryptDataKeyResponse) Reset() {
 	*x = DecryptDataKeyResponse{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[7]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -446,7 +559,7 @@ func (x *DecryptDataKeyResponse) String() string {
 func (*DecryptDataKeyResponse) ProtoMessage() {}
 
 func (x *DecryptDataKeyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[7]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -459,7 +572,7 @@ func (x *DecryptDataKeyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DecryptDataKeyResponse.ProtoReflect.Descriptor instead.
 func (*DecryptDataKeyResponse) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{7}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *DecryptDataKeyResponse) GetPlaintext() []byte {
@@ -478,7 +591,7 @@ type RotateKeyRequest struct {
 
 func (x *RotateKeyRequest) Reset() {
 	*x = RotateKeyRequest{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[8]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -490,7 +603,7 @@ func (x *RotateKeyRequest) String() string {
 func (*RotateKeyRequest) ProtoMessage() {}
 
 func (x *RotateKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[8]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -503,7 +616,7 @@ func (x *RotateKeyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RotateKeyRequest.ProtoReflect.Descriptor instead.
 func (*RotateKeyRequest) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{8}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *RotateKeyRequest) GetKeyId() string {
@@ -522,7 +635,7 @@ type RotateKeyResponse struct {
 
 func (x *RotateKeyResponse) Reset() {
 	*x = RotateKeyResponse{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[9]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -534,7 +647,7 @@ func (x *RotateKeyResponse) String() string {
 func (*RotateKeyResponse) ProtoMessage() {}
 
 func (x *RotateKeyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[9]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -547,7 +660,7 @@ func (x *RotateKeyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RotateKeyResponse.ProtoReflect.Descriptor instead.
 func (*RotateKeyResponse) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{9}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *RotateKeyResponse) GetVersion() uint32 {
@@ -566,7 +679,7 @@ type EnableKeyRequest struct {
 
 func (x *EnableKeyRequest) Reset() {
 	*x = EnableKeyRequest{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[10]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -578,7 +691,7 @@ func (x *EnableKeyRequest) String() string {
 func (*EnableKeyRequest) ProtoMessage() {}
 
 func (x *EnableKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[10]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -591,7 +704,7 @@ func (x *EnableKeyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnableKeyRequest.ProtoReflect.Descriptor instead.
 func (*EnableKeyRequest) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{10}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *EnableKeyRequest) GetKeyId() string {
@@ -610,7 +723,7 @@ type DisableKeyRequest struct {
 
 func (x *DisableKeyRequest) Reset() {
 	*x = DisableKeyRequest{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[11]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -622,7 +735,7 @@ func (x *DisableKeyRequest) String() string {
 func (*DisableKeyRequest) ProtoMessage() {}
 
 func (x *DisableKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[11]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -635,7 +748,7 @@ func (x *DisableKeyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DisableKeyRequest.ProtoReflect.Descriptor instead.
 func (*DisableKeyRequest) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{11}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *DisableKeyRequest) GetKeyId() string {
@@ -648,15 +761,17 @@ func (x *DisableKeyRequest) GetKeyId() string {
 type KeyMetadata struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	KeyId         string                 `protobuf:"bytes,1,opt,name=key_id,json=keyId,proto3" json:"key_id,omitempty"`
-	Enabled       bool                   `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	LatestVersion uint32                 `protobuf:"varint,3,opt,name=latest_version,json=latestVersion,proto3" json:"latest_version,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Enabled       bool                   `protobuf:"varint,3,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	LatestVersion uint32                 `protobuf:"varint,4,opt,name=latest_version,json=latestVersion,proto3" json:"latest_version,omitempty"`
+	Algorithm     string                 `protobuf:"bytes,5,opt,name=algorithm,proto3" json:"algorithm,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KeyMetadata) Reset() {
 	*x = KeyMetadata{}
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[12]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -668,7 +783,7 @@ func (x *KeyMetadata) String() string {
 func (*KeyMetadata) ProtoMessage() {}
 
 func (x *KeyMetadata) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_kms_v1_kms_proto_msgTypes[12]
+	mi := &file_proto_kms_v1_kms_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -681,12 +796,19 @@ func (x *KeyMetadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KeyMetadata.ProtoReflect.Descriptor instead.
 func (*KeyMetadata) Descriptor() ([]byte, []int) {
-	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{12}
+	return file_proto_kms_v1_kms_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *KeyMetadata) GetKeyId() string {
 	if x != nil {
 		return x.KeyId
+	}
+	return ""
+}
+
+func (x *KeyMetadata) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
 	}
 	return ""
 }
@@ -705,11 +827,26 @@ func (x *KeyMetadata) GetLatestVersion() uint32 {
 	return 0
 }
 
+func (x *KeyMetadata) GetAlgorithm() string {
+	if x != nil {
+		return x.Algorithm
+	}
+	return ""
+}
+
 var File_proto_kms_v1_kms_proto protoreflect.FileDescriptor
 
 const file_proto_kms_v1_kms_proto_rawDesc = "" +
 	"\n" +
-	"\x16proto/kms/v1/kms.proto\x12\x06kms.v1\"n\n" +
+	"\x16proto/kms/v1/kms.proto\x12\x06kms.v1\"D\n" +
+	"\x10CreateKeyRequest\x12\x1c\n" +
+	"\talgorithm\x18\x01 \x01(\tR\talgorithm\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"c\n" +
+	"\x11CreateKeyResponse\x12\x15\n" +
+	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x18\n" +
+	"\aversion\x18\x02 \x01(\rR\aversion\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x03 \x01(\tR\tcreatedAt\"n\n" +
 	"\x0eEncryptRequest\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x1c\n" +
 	"\tplaintext\x18\x02 \x01(\fR\tplaintext\x12'\n" +
@@ -749,12 +886,16 @@ const file_proto_kms_v1_kms_proto_rawDesc = "" +
 	"\x10EnableKeyRequest\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\"*\n" +
 	"\x11DisableKeyRequest\x12\x15\n" +
-	"\x06key_id\x18\x01 \x01(\tR\x05keyId\"e\n" +
+	"\x06key_id\x18\x01 \x01(\tR\x05keyId\"\xa2\x01\n" +
 	"\vKeyMetadata\x12\x15\n" +
-	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x18\n" +
-	"\aenabled\x18\x02 \x01(\bR\aenabled\x12%\n" +
-	"\x0elatest_version\x18\x03 \x01(\rR\rlatestVersion2\xde\x03\n" +
-	"\x03KMS\x12:\n" +
+	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x02 \x01(\tR\tcreatedAt\x12\x18\n" +
+	"\aenabled\x18\x03 \x01(\bR\aenabled\x12%\n" +
+	"\x0elatest_version\x18\x04 \x01(\rR\rlatestVersion\x12\x1c\n" +
+	"\talgorithm\x18\x05 \x01(\tR\talgorithm2\xa0\x04\n" +
+	"\x03KMS\x12@\n" +
+	"\tCreateKey\x12\x18.kms.v1.CreateKeyRequest\x1a\x19.kms.v1.CreateKeyResponse\x12:\n" +
 	"\aEncrypt\x12\x16.kms.v1.EncryptRequest\x1a\x17.kms.v1.EncryptResponse\x12:\n" +
 	"\aDecrypt\x12\x16.kms.v1.DecryptRequest\x1a\x17.kms.v1.DecryptResponse\x12R\n" +
 	"\x0fGenerateDataKey\x12\x1e.kms.v1.GenerateDataKeyRequest\x1a\x1f.kms.v1.GenerateDataKeyResponse\x12O\n" +
@@ -776,39 +917,43 @@ func file_proto_kms_v1_kms_proto_rawDescGZIP() []byte {
 	return file_proto_kms_v1_kms_proto_rawDescData
 }
 
-var file_proto_kms_v1_kms_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_proto_kms_v1_kms_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_proto_kms_v1_kms_proto_goTypes = []any{
-	(*EncryptRequest)(nil),          // 0: kms.v1.EncryptRequest
-	(*EncryptResponse)(nil),         // 1: kms.v1.EncryptResponse
-	(*DecryptRequest)(nil),          // 2: kms.v1.DecryptRequest
-	(*DecryptResponse)(nil),         // 3: kms.v1.DecryptResponse
-	(*GenerateDataKeyRequest)(nil),  // 4: kms.v1.GenerateDataKeyRequest
-	(*GenerateDataKeyResponse)(nil), // 5: kms.v1.GenerateDataKeyResponse
-	(*DecryptDataKeyRequest)(nil),   // 6: kms.v1.DecryptDataKeyRequest
-	(*DecryptDataKeyResponse)(nil),  // 7: kms.v1.DecryptDataKeyResponse
-	(*RotateKeyRequest)(nil),        // 8: kms.v1.RotateKeyRequest
-	(*RotateKeyResponse)(nil),       // 9: kms.v1.RotateKeyResponse
-	(*EnableKeyRequest)(nil),        // 10: kms.v1.EnableKeyRequest
-	(*DisableKeyRequest)(nil),       // 11: kms.v1.DisableKeyRequest
-	(*KeyMetadata)(nil),             // 12: kms.v1.KeyMetadata
+	(*CreateKeyRequest)(nil),        // 0: kms.v1.CreateKeyRequest
+	(*CreateKeyResponse)(nil),       // 1: kms.v1.CreateKeyResponse
+	(*EncryptRequest)(nil),          // 2: kms.v1.EncryptRequest
+	(*EncryptResponse)(nil),         // 3: kms.v1.EncryptResponse
+	(*DecryptRequest)(nil),          // 4: kms.v1.DecryptRequest
+	(*DecryptResponse)(nil),         // 5: kms.v1.DecryptResponse
+	(*GenerateDataKeyRequest)(nil),  // 6: kms.v1.GenerateDataKeyRequest
+	(*GenerateDataKeyResponse)(nil), // 7: kms.v1.GenerateDataKeyResponse
+	(*DecryptDataKeyRequest)(nil),   // 8: kms.v1.DecryptDataKeyRequest
+	(*DecryptDataKeyResponse)(nil),  // 9: kms.v1.DecryptDataKeyResponse
+	(*RotateKeyRequest)(nil),        // 10: kms.v1.RotateKeyRequest
+	(*RotateKeyResponse)(nil),       // 11: kms.v1.RotateKeyResponse
+	(*EnableKeyRequest)(nil),        // 12: kms.v1.EnableKeyRequest
+	(*DisableKeyRequest)(nil),       // 13: kms.v1.DisableKeyRequest
+	(*KeyMetadata)(nil),             // 14: kms.v1.KeyMetadata
 }
 var file_proto_kms_v1_kms_proto_depIdxs = []int32{
-	0,  // 0: kms.v1.KMS.Encrypt:input_type -> kms.v1.EncryptRequest
-	2,  // 1: kms.v1.KMS.Decrypt:input_type -> kms.v1.DecryptRequest
-	4,  // 2: kms.v1.KMS.GenerateDataKey:input_type -> kms.v1.GenerateDataKeyRequest
-	6,  // 3: kms.v1.KMS.DecryptDataKey:input_type -> kms.v1.DecryptDataKeyRequest
-	8,  // 4: kms.v1.KMS.RotateKey:input_type -> kms.v1.RotateKeyRequest
-	10, // 5: kms.v1.KMS.EnableKey:input_type -> kms.v1.EnableKeyRequest
-	11, // 6: kms.v1.KMS.DisableKey:input_type -> kms.v1.DisableKeyRequest
-	1,  // 7: kms.v1.KMS.Encrypt:output_type -> kms.v1.EncryptResponse
-	3,  // 8: kms.v1.KMS.Decrypt:output_type -> kms.v1.DecryptResponse
-	5,  // 9: kms.v1.KMS.GenerateDataKey:output_type -> kms.v1.GenerateDataKeyResponse
-	7,  // 10: kms.v1.KMS.DecryptDataKey:output_type -> kms.v1.DecryptDataKeyResponse
-	9,  // 11: kms.v1.KMS.RotateKey:output_type -> kms.v1.RotateKeyResponse
-	12, // 12: kms.v1.KMS.EnableKey:output_type -> kms.v1.KeyMetadata
-	12, // 13: kms.v1.KMS.DisableKey:output_type -> kms.v1.KeyMetadata
-	7,  // [7:14] is the sub-list for method output_type
-	0,  // [0:7] is the sub-list for method input_type
+	0,  // 0: kms.v1.KMS.CreateKey:input_type -> kms.v1.CreateKeyRequest
+	2,  // 1: kms.v1.KMS.Encrypt:input_type -> kms.v1.EncryptRequest
+	4,  // 2: kms.v1.KMS.Decrypt:input_type -> kms.v1.DecryptRequest
+	6,  // 3: kms.v1.KMS.GenerateDataKey:input_type -> kms.v1.GenerateDataKeyRequest
+	8,  // 4: kms.v1.KMS.DecryptDataKey:input_type -> kms.v1.DecryptDataKeyRequest
+	10, // 5: kms.v1.KMS.RotateKey:input_type -> kms.v1.RotateKeyRequest
+	12, // 6: kms.v1.KMS.EnableKey:input_type -> kms.v1.EnableKeyRequest
+	13, // 7: kms.v1.KMS.DisableKey:input_type -> kms.v1.DisableKeyRequest
+	1,  // 8: kms.v1.KMS.CreateKey:output_type -> kms.v1.CreateKeyResponse
+	3,  // 9: kms.v1.KMS.Encrypt:output_type -> kms.v1.EncryptResponse
+	5,  // 10: kms.v1.KMS.Decrypt:output_type -> kms.v1.DecryptResponse
+	7,  // 11: kms.v1.KMS.GenerateDataKey:output_type -> kms.v1.GenerateDataKeyResponse
+	9,  // 12: kms.v1.KMS.DecryptDataKey:output_type -> kms.v1.DecryptDataKeyResponse
+	11, // 13: kms.v1.KMS.RotateKey:output_type -> kms.v1.RotateKeyResponse
+	14, // 14: kms.v1.KMS.EnableKey:output_type -> kms.v1.KeyMetadata
+	14, // 15: kms.v1.KMS.DisableKey:output_type -> kms.v1.KeyMetadata
+	8,  // [8:16] is the sub-list for method output_type
+	0,  // [0:8] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
@@ -825,7 +970,7 @@ func file_proto_kms_v1_kms_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_kms_v1_kms_proto_rawDesc), len(file_proto_kms_v1_kms_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

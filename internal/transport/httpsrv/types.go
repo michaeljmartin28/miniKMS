@@ -1,4 +1,4 @@
-package http
+package httpsrv
 
 type CreateKeyRequest struct {
 	Name      string `json:"name"`
@@ -12,7 +12,7 @@ type EncryptRequest struct {
 
 type DecryptRequest struct {
 	Ciphertext     string `json:"ciphertext"`
-	Version        int    `json:"verison"`
+	Version        uint32 `json:"version"`
 	AdditionalData string `json:"additional_data,omitempty"`
 }
 
@@ -22,10 +22,10 @@ type GenerateDataKeyRequest struct {
 
 type DecryptDataKeyRequest struct {
 	EncryptedDEK   string `json:"encrypted_dek"`
-	Version        int    `json:"verison"`
+	Version        uint32 `json:"version"`
 	AdditionalData string `json:"additional_data,omitempty"`
 }
 
 type RotateKeyResponse struct {
-	Version int `json:"version"`
+	Version uint32 `json:"version"`
 }

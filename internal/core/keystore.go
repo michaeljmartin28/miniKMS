@@ -9,13 +9,13 @@ type KeyMetadata struct {
 	CreatedAt     time.Time
 	State         KeyState
 	Algorithm     Algorithm
-	LatestVersion int
+	LatestVersion uint32
 }
 
 // KeyVersion represents a specific version of a key, including its version number,
 // creation time, and the key material.
 type KeyVersion struct {
-	Version   int
+	Version   uint32
 	CreatedAt time.Time
 	Material  []byte
 }
@@ -45,6 +45,6 @@ type KeyStore interface {
 
 	// Version operations
 	SaveVersion(keyID string, version KeyVersion) error
-	GetVersion(keyID string, version int) (KeyVersion, error)
+	GetVersion(keyID string, version uint32) (KeyVersion, error)
 	ListVersions(keyID string) ([]KeyVersion, error)
 }

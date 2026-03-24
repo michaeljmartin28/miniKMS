@@ -1,4 +1,4 @@
-package http
+package httpsrv
 
 import (
 	"encoding/json"
@@ -38,7 +38,7 @@ func (h *Handler) CreateKey(w http.ResponseWriter, r *http.Request) {
 
 	req, err := DecodeRequest[CreateKeyRequest](r.Body)
 	if err != nil {
-		WriteError(w, ErrBadJson)
+		WriteError(w, ErrBadJSON)
 		return
 	}
 
@@ -98,7 +98,7 @@ func (h *Handler) Encrypt(w http.ResponseWriter, r *http.Request) {
 
 	req, err := DecodeRequest[EncryptRequest](r.Body)
 	if err != nil {
-		WriteError(w, ErrBadJson)
+		WriteError(w, ErrBadJSON)
 		return
 	}
 
@@ -123,7 +123,7 @@ func (h *Handler) Decrypt(w http.ResponseWriter, r *http.Request) {
 
 	req, err := DecodeRequest[DecryptRequest](r.Body)
 	if err != nil {
-		WriteError(w, ErrBadJson)
+		WriteError(w, ErrBadJSON)
 		return
 	}
 
@@ -148,7 +148,7 @@ func (h *Handler) GenerateDataKey(w http.ResponseWriter, r *http.Request) {
 
 	req, err := DecodeRequest[GenerateDataKeyRequest](r.Body)
 	if err != nil {
-		WriteError(w, ErrBadJson)
+		WriteError(w, ErrBadJSON)
 		return
 	}
 
@@ -171,7 +171,7 @@ func (h *Handler) DecryptDataKey(w http.ResponseWriter, r *http.Request) {
 
 	req, err := DecodeRequest[DecryptDataKeyRequest](r.Body)
 	if err != nil {
-		WriteError(w, ErrBadJson)
+		WriteError(w, ErrBadJSON)
 		return
 	}
 
