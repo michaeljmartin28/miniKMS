@@ -32,7 +32,7 @@ func (s *GRPCServer) CreateKey(ctx context.Context, req *kmsv1.CreateKeyRequest)
 
 	return &kmsv1.CreateKeyResponse{
 		KeyId:     resp.KeyID,
-		Version:   uint32(resp.Version),
+		Version:   resp.Version,
 		CreatedAt: resp.CreateAt.Format(time.RFC3339),
 	}, nil
 }
@@ -51,7 +51,7 @@ func (s *GRPCServer) Encrypt(ctx context.Context, req *kmsv1.EncryptRequest) (*k
 
 	return &kmsv1.EncryptResponse{
 		Ciphertext: resp.Ciphertext,
-		Version:    uint32(resp.Version),
+		Version:    resp.Version,
 	}, nil
 }
 
@@ -60,7 +60,7 @@ func (s *GRPCServer) Decrypt(ctx context.Context, req *kmsv1.DecryptRequest) (*k
 		KeyID:          req.KeyId,
 		Ciphertext:     req.Ciphertext,
 		AdditionalData: req.AdditionalData,
-		Version:        int(req.Version),
+		Version:        req.Version,
 	}
 
 	resp, err := s.Engine.Decrypt(ctx, coreReq)
@@ -87,7 +87,7 @@ func (s *GRPCServer) GenerateDataKey(ctx context.Context, req *kmsv1.GenerateDat
 	return &kmsv1.GenerateDataKeyResponse{
 		Plaintext:    resp.PlaintextDEK,
 		EncryptedDek: resp.EncryptedDEK,
-		Version:      uint32(resp.Version),
+		Version:      resp.Version,
 	}, nil
 }
 
@@ -95,7 +95,7 @@ func (s *GRPCServer) DecryptDataKey(ctx context.Context, req *kmsv1.DecryptDataK
 	coreReq := core.DecryptDataKeyRequest{
 		KeyID:          req.KeyId,
 		EncryptedDEK:   req.EncryptedDek,
-		Version:        int(req.Version),
+		Version:        req.Version,
 		AdditionalData: req.AdditionalData,
 	}
 
@@ -117,7 +117,7 @@ func (s *GRPCServer) RotateKey(ctx context.Context, req *kmsv1.RotateKeyRequest)
 	}
 
 	return &kmsv1.RotateKeyResponse{
-		Version: uint32(resp),
+		Version: resp,
 	}, nil
 }
 
@@ -132,7 +132,7 @@ func (s *GRPCServer) EnableKey(ctx context.Context, req *kmsv1.EnableKeyRequest)
 		KeyId:         resp.KeyID,
 		Enabled:       resp.State.IsEnabled(),
 		CreatedAt:     resp.CreatedAt.Format(time.RFC3339),
-		LatestVersion: uint32(resp.LatestVersion),
+		LatestVersion: resp.LatestVersion,
 		Algorithm:     string(resp.Algorithm),
 	}, nil
 }
@@ -148,7 +148,7 @@ func (s *GRPCServer) DisableKey(ctx context.Context, req *kmsv1.DisableKeyReques
 		KeyId:         resp.KeyID,
 		Enabled:       resp.State.IsEnabled(),
 		CreatedAt:     resp.CreatedAt.Format(time.RFC3339),
-		LatestVersion: uint32(resp.LatestVersion),
+		LatestVersion: resp.LatestVersion,
 		Algorithm:     string(resp.Algorithm),
 	}, nil
 }

@@ -64,7 +64,7 @@ func main() {
 	kmsv1.RegisterKMSServer(grpcServer, grpcsrv.NewGRPCServer(engine))
 	listener, err := net.Listen("tcp", ":9090")
 	if err != nil {
-		log.Fatal("failed to start listener: %v", err)
+		log.Fatalf("failed to start listener: %v", err)
 	}
 
 	go func() {

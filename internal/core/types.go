@@ -11,7 +11,7 @@ type CreateKeyRequest struct {
 
 type CreateKeyResponse struct {
 	KeyID    string
-	Version  int
+	Version  uint32
 	CreateAt time.Time
 }
 
@@ -23,7 +23,7 @@ type EncryptRequest struct {
 
 type EncryptResponse struct {
 	Ciphertext []byte
-	Version    int
+	Version    uint32
 	KeyID      string
 	Algorithm  Algorithm
 }
@@ -32,7 +32,7 @@ type DecryptRequest struct {
 	KeyID          string
 	Ciphertext     []byte
 	AdditionalData []byte
-	Version        int
+	Version        uint32
 }
 
 type DecryptResponse struct {
@@ -47,13 +47,13 @@ type GenerateDataKeyRequest struct {
 type GenerateDataKeyResponse struct {
 	PlaintextDEK []byte
 	EncryptedDEK []byte
-	Version      int
+	Version      uint32
 }
 
 type DecryptDataKeyRequest struct {
 	KeyID          string
 	EncryptedDEK   []byte
-	Version        int
+	Version        uint32
 	AdditionalData []byte
 }
 

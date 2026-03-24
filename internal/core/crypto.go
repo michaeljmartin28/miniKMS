@@ -8,7 +8,7 @@ const (
 
 type Ciphertext struct {
 	KeyID     string
-	Version   int
+	Version   uint32
 	Algorithm Algorithm
 	Data      []byte
 }

@@ -42,7 +42,7 @@ var _ CoreKMS = (*Engine)(nil)
 func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKeyResponse, error) {
 
 	keyBytes, err := e.Crypto.GenerateKey(req.Algorithm)
-	version := 1
+	version := uint32(1)
 
 	keyVersion := KeyVersion{
 		Version:   version,
@@ -194,17 +194,17 @@ func (e *Engine) DecryptDataKey(ctx context.Context, req DecryptDataKeyRequest) 
 	return &response, nil
 }
 
-func (e *Engine) RotateKey(ctx context.Context, keyID string) (int, error) {
+func (e *Engine) RotateKey(ctx context.Context, keyID string) (uint32, error) {
 
 	// Get the metadata for a key
 	keyMetadata, err := e.Storage.GetKey(keyID)
 	if err != nil {
-		return -1, err
+		return 0, err
 	}
 
 	// Ensure we are allowed to rotate it
 	if keyMetadata.State.IsDisabled() {
-		return -1, fmt.Errorf("key is disabled - cannot rotate")
+		return 0, fmt.Errorf("key is disabled - cannot rotate")
 	}
 	// TODO: maybe add another state, pending deletion
 
@@ -213,7 +213,7 @@ func (e *Engine) RotateKey(ctx context.Context, keyID string) (int, error) {
 	// Generate new key material
 	newKey, err := e.Crypto.GenerateKey(keyMetadata.Algorithm)
 	if err != nil {
-		return -1, err
+		return 0, err
 	}
 
 	// Create a new version
@@ -226,7 +226,7 @@ func (e *Engine) RotateKey(ctx context.Context, keyID string) (int, error) {
 	// Store the new version
 	err = e.Storage.SaveVersion(keyMetadata.KeyID, newVersion)
 	if err != nil {
-		return -1, err
+		return 0, err
 	}
 
 	// Now that we were able to store the new version, update the key metadata to match the newest version
@@ -234,7 +234,7 @@ func (e *Engine) RotateKey(ctx context.Context, keyID string) (int, error) {
 
 	err = e.Storage.UpdateKey(keyMetadata)
 	if err != nil {
-		return -1, err
+		return 0, err
 	}
 
 	return keyMetadata.LatestVersion, nil

@@ -11,31 +11,30 @@ import (
 	"go.etcd.io/bbolt"
 )
 
-
 type BoltStore struct {
 	db *bbolt.DB
 }
 
 const (
-	keyMetaBucket = "KeyMetadata"
+	keyMetaBucket     = "KeyMetadata"
 	keyVersionsBucket = "KeyVersions"
 )
 
 func NewBoltStore(dbPath string) (*BoltStore, error) {
-	
+
 	// Ensure directory exists
-    if err := os.MkdirAll(filepath.Dir(dbPath), 0755); err != nil {
-        return nil, err
-    }
+	if err := os.MkdirAll(filepath.Dir(dbPath), 0755); err != nil {
+		return nil, err
+	}
 
 	// Open or create the BoltDB database
-	db, err := bbolt.Open(dbPath, 0600, nil)	
+	db, err := bbolt.Open(dbPath, 0600, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	// Initialize the bucket for storing key metadata if it doesn't exist
-	err = db.Update(func(tx *bbolt.Tx) error{
+	err = db.Update(func(tx *bbolt.Tx) error {
 
 		_, err := tx.CreateBucketIfNotExists([]byte(keyMetaBucket))
 		if err != nil {
@@ -48,9 +47,8 @@ func NewBoltStore(dbPath string) (*BoltStore, error) {
 		return nil, err
 	}
 
-
 	// Initialize the bucket for storing key versions if it doesn't exist
-	err = db.Update(func(tx *bbolt.Tx) error{
+	err = db.Update(func(tx *bbolt.Tx) error {
 
 		_, err := tx.CreateBucketIfNotExists([]byte(keyVersionsBucket))
 		if err != nil {
@@ -69,7 +67,6 @@ func NewBoltStore(dbPath string) (*BoltStore, error) {
 func (s *BoltStore) Close() error {
 	return s.db.Close()
 }
-
 
 func serializeKeyMetadata(meta core.KeyMetadata) ([]byte, error) {
 	return json.Marshal(meta)
@@ -101,9 +98,8 @@ func deserializeKeyVersion(data []byte) (core.KeyVersion, error) {
 // compile-time assertion to ensure BoltStore implements the core.keystore interface
 var _ core.KeyStore = (*BoltStore)(nil)
 
-
 func (s *BoltStore) SaveKey(keyMeta core.KeyMetadata) error {
-	return s.db.Update(func (tx *bbolt.Tx) error{
+	return s.db.Update(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket([]byte(keyMetaBucket))
 		if bucket == nil {
 			return fmt.Errorf("Bucket %s not found", keyMetaBucket)
@@ -124,16 +120,15 @@ func (s *BoltStore) SaveKey(keyMeta core.KeyMetadata) error {
 	})
 }
 
-
-func (s * BoltStore) GetKey(keyID string) (core.KeyMetadata, error){
+func (s *BoltStore) GetKey(keyID string) (core.KeyMetadata, error) {
 
 	var result core.KeyMetadata
 
-	err := s.db.View(func (tx *bbolt.Tx)  error{
+	err := s.db.View(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket([]byte(keyMetaBucket))
 		if bucket == nil {
-			return  fmt.Errorf("bucket %s not found", keyMetaBucket)
-		} 
+			return fmt.Errorf("bucket %s not found", keyMetaBucket)
+		}
 
 		val := bucket.Get([]byte(keyID))
 		if val == nil {
@@ -153,8 +148,8 @@ func (s * BoltStore) GetKey(keyID string) (core.KeyMetadata, error){
 }
 
 func (s *BoltStore) UpdateKey(keyMeta core.KeyMetadata) error {
-	
-	return s.db.Update(func (tx *bbolt.Tx) error{
+
+	return s.db.Update(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket([]byte(keyMetaBucket))
 		if bucket == nil {
 			return fmt.Errorf("Bucket %s not found", keyMetaBucket)
@@ -169,11 +164,12 @@ func (s *BoltStore) UpdateKey(keyMeta core.KeyMetadata) error {
 			return err
 		}
 		return bucket.Put(keyID, data)
-	})}
+	})
+}
 
 func (s *BoltStore) DeleteKey(keyID string) error {
-	
-	return s.db.Update(func (tx *bbolt.Tx) error{
+
+	return s.db.Update(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket([]byte(keyMetaBucket))
 		if bucket == nil {
 			return fmt.Errorf("Bucket %s not found", keyMetaBucket)
@@ -183,8 +179,8 @@ func (s *BoltStore) DeleteKey(keyID string) error {
 }
 
 func (s *BoltStore) SaveVersion(keyID string, version core.KeyVersion) error {
-	
-	return s.db.Update( func(tx *bbolt.Tx) error{
+
+	return s.db.Update(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket([]byte(keyVersionsBucket))
 		if bucket == nil {
 			return fmt.Errorf("Bucket %s not found", keyVersionsBucket)
@@ -203,16 +199,15 @@ func (s *BoltStore) SaveVersion(keyID string, version core.KeyVersion) error {
 
 }
 
-func (s *BoltStore) GetVersion(keyID string, version int) (core.KeyVersion, error) {
-	
+func (s *BoltStore) GetVersion(keyID string, version uint32) (core.KeyVersion, error) {
 
 	var result core.KeyVersion
 
-	err := s.db.View(func (tx *bbolt.Tx)  error{
+	err := s.db.View(func(tx *bbolt.Tx) error {
 		bucket := tx.Bucket([]byte(keyVersionsBucket))
 		if bucket == nil {
-			return  fmt.Errorf("bucket %s not found", keyVersionsBucket)
-		} 
+			return fmt.Errorf("bucket %s not found", keyVersionsBucket)
+		}
 
 		val := bucket.Get([]byte(fmt.Sprintf("%s:%d", keyID, version)))
 		if val == nil {
@@ -232,7 +227,7 @@ func (s *BoltStore) GetVersion(keyID string, version int) (core.KeyVersion, erro
 }
 
 func (s *BoltStore) ListVersions(keyID string) ([]core.KeyVersion, error) {
-	
+
 	versions := make([]core.KeyVersion, 0, 4)
 
 	err := s.db.View(func(tx *bbolt.Tx) error {
