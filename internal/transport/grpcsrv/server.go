@@ -107,3 +107,15 @@ func (s *GRPCServer) DecryptDataKey(ctx context.Context, req *kmsv1.DecryptDataK
 		Plaintext: resp.PlaintextDEK,
 	}, nil
 }
+
+func (s *GRPCServer) RotateKey(ctx context.Context, req *kmsv1.RotateKeyRequest) (*kmsv1.RotateKeyResponse, error) {
+
+	resp, err := s.Engine.RotateKey(ctx, req.KeyId)
+	if err != nil {
+		return nil, mapErrorToGRPC(err)
+	}
+
+	return &kmsv1.RotateKeyResponse{
+		Version: uint32(resp),
+	}, nil
+}
