@@ -72,20 +72,38 @@ func (s *GRPCServer) Decrypt(ctx context.Context, req *kmsv1.DecryptRequest) (*k
 	}, nil
 }
 
-func (s *GRPCServer) CreateKey(ctx context.Context, req *kmsv1.CreateKeyRequest) (*kmsv1.CreateKeyResponse, error) {
-	coreReq := core.CreateKeyRequest{
-		Algorithm: core.Algorithm(req.Algorithm),
-		Name:      req.Name,
+func (s *GRPCServer) GenerateDataKey(ctx context.Context, req *kmsv1.GenerateDataKeyRequest) (*kmsv1.GenerateDataKeyResponse, error) {
+	coreReq := core.GenerateDataKeyRequest{
+		KeyID:          req.KeyId,
+		AdditionalData: req.AdditionalData,
 	}
 
-	resp, err := s.Engine.CreateKey(ctx, coreReq)
+	resp, err := s.Engine.GenerateDataKey(ctx, coreReq)
 	if err != nil {
 		return nil, mapErrorToGRPC(err)
 	}
 
-	return &kmsv1.CreateKeyResponse{
-		KeyId:     resp.KeyID,
-		Version:   uint32(resp.Version),
-		CreatedAt: resp.CreateAt.String(),
+	return &kmsv1.GenerateDataKeyResponse{
+		Plaintext:    resp.PlaintextDEK,
+		EncryptedDek: resp.EncryptedDEK,
+		Version:      uint32(resp.Version),
+	}, nil
+}
+
+func (s *GRPCServer) DecryptDataKey(ctx context.Context, req *kmsv1.DecryptDataKeyRequest) (*kmsv1.DecryptDataKeyResponse, error) {
+	coreReq := core.DecryptDataKeyRequest{
+		KeyID:          req.KeyId,
+		EncryptedDEK:   req.EncryptedDek,
+		Version:        int(req.Version),
+		AdditionalData: req.AdditionalData,
+	}
+
+	resp, err := s.Engine.DecryptDataKey(ctx, coreReq)
+	if err != nil {
+		return nil, mapErrorToGRPC(err)
+	}
+
+	return &kmsv1.DecryptDataKeyResponse{
+		Plaintext: resp.PlaintextDEK,
 	}, nil
 }
