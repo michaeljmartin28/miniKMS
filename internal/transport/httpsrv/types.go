@@ -1,4 +1,4 @@
-package http
+package httpsrv
 
 type CreateKeyRequest struct {
 	Name      string `json:"name"`
