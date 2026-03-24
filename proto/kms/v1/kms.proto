@@ -81,8 +81,10 @@ message DisableKeyRequest {
 
 message KeyMetadata {
     string key_id = 1;
-    bool enabled = 2;
-    uint32 latest_version = 3;
+    string created_at = 2;
+    bool enabled = 3;
+    uint32 latest_version = 4;
+    string algorithm = 5;
 }
 
 // -----------------------------

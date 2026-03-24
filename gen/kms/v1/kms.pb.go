@@ -760,8 +760,10 @@ func (x *DisableKeyRequest) GetKeyId() string {
 type KeyMetadata struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	KeyId         string                 `protobuf:"bytes,1,opt,name=key_id,json=keyId,proto3" json:"key_id,omitempty"`
-	Enabled       bool                   `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	LatestVersion uint32                 `protobuf:"varint,3,opt,name=latest_version,json=latestVersion,proto3" json:"latest_version,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Enabled       bool                   `protobuf:"varint,3,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	LatestVersion uint32                 `protobuf:"varint,4,opt,name=latest_version,json=latestVersion,proto3" json:"latest_version,omitempty"`
+	Algorithm     string                 `protobuf:"bytes,5,opt,name=algorithm,proto3" json:"algorithm,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -803,6 +805,13 @@ func (x *KeyMetadata) GetKeyId() string {
 	return ""
 }
 
+func (x *KeyMetadata) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
 func (x *KeyMetadata) GetEnabled() bool {
 	if x != nil {
 		return x.Enabled
@@ -815,6 +824,13 @@ func (x *KeyMetadata) GetLatestVersion() uint32 {
 		return x.LatestVersion
 	}
 	return 0
+}
+
+func (x *KeyMetadata) GetAlgorithm() string {
+	if x != nil {
+		return x.Algorithm
+	}
+	return ""
 }
 
 var File_proto_kms_v1_kms_proto protoreflect.FileDescriptor
@@ -869,11 +885,14 @@ const file_proto_kms_v1_kms_proto_rawDesc = "" +
 	"\x10EnableKeyRequest\x12\x15\n" +
 	"\x06key_id\x18\x01 \x01(\tR\x05keyId\"*\n" +
 	"\x11DisableKeyRequest\x12\x15\n" +
-	"\x06key_id\x18\x01 \x01(\tR\x05keyId\"e\n" +
+	"\x06key_id\x18\x01 \x01(\tR\x05keyId\"\xa2\x01\n" +
 	"\vKeyMetadata\x12\x15\n" +
-	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x18\n" +
-	"\aenabled\x18\x02 \x01(\bR\aenabled\x12%\n" +
-	"\x0elatest_version\x18\x03 \x01(\rR\rlatestVersion2\xa0\x04\n" +
+	"\x06key_id\x18\x01 \x01(\tR\x05keyId\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x02 \x01(\tR\tcreatedAt\x12\x18\n" +
+	"\aenabled\x18\x03 \x01(\bR\aenabled\x12%\n" +
+	"\x0elatest_version\x18\x04 \x01(\rR\rlatestVersion\x12\x1c\n" +
+	"\talgorithm\x18\x05 \x01(\tR\talgorithm2\xa0\x04\n" +
 	"\x03KMS\x12@\n" +
 	"\tCreateKey\x12\x18.kms.v1.CreateKeyRequest\x1a\x19.kms.v1.CreateKeyResponse\x12:\n" +
 	"\aEncrypt\x12\x16.kms.v1.EncryptRequest\x1a\x17.kms.v1.EncryptResponse\x12:\n" +

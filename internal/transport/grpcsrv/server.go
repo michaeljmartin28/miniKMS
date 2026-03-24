@@ -119,3 +119,35 @@ func (s *GRPCServer) RotateKey(ctx context.Context, req *kmsv1.RotateKeyRequest)
 		Version: uint32(resp),
 	}, nil
 }
+
+func (s *GRPCServer) EnableKey(ctx context.Context, req *kmsv1.EnableKeyRequest) (*kmsv1.KeyMetadata, error) {
+
+	resp, err := s.Engine.EnableKey(ctx, req.KeyId)
+	if err != nil {
+		return nil, mapErrorToGRPC(err)
+	}
+
+	return &kmsv1.KeyMetadata{
+		KeyId:         resp.KeyID,
+		Enabled:       resp.State.IsEnabled(),
+		CreatedAt:     resp.CreatedAt.String(),
+		LatestVersion: uint32(resp.LatestVersion),
+		Algorithm:     string(resp.Algorithm),
+	}, nil
+}
+
+func (s *GRPCServer) DisableKey(ctx context.Context, req *kmsv1.DisableKeyRequest) (*kmsv1.KeyMetadata, error) {
+
+	resp, err := s.Engine.DisableKey(ctx, req.KeyId)
+	if err != nil {
+		return nil, mapErrorToGRPC(err)
+	}
+
+	return &kmsv1.KeyMetadata{
+		KeyId:         resp.KeyID,
+		Enabled:       resp.State.IsEnabled(),
+		CreatedAt:     resp.CreatedAt.String(),
+		LatestVersion: uint32(resp.LatestVersion),
+		Algorithm:     string(resp.Algorithm),
+	}, nil
+}
