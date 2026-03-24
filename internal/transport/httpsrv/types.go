@@ -12,7 +12,7 @@ type EncryptRequest struct {
 
 type DecryptRequest struct {
 	Ciphertext     string `json:"ciphertext"`
-	Version        int    `json:"verison"`
+	Version        int    `json:"version"`
 	AdditionalData string `json:"additional_data,omitempty"`
 }
 
@@ -22,7 +22,7 @@ type GenerateDataKeyRequest struct {
 
 type DecryptDataKeyRequest struct {
 	EncryptedDEK   string `json:"encrypted_dek"`
-	Version        int    `json:"verison"`
+	Version        int    `json:"version"`
 	AdditionalData string `json:"additional_data,omitempty"`
 }
 

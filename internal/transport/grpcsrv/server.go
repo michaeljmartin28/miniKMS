@@ -18,6 +18,24 @@ func NewGRPCServer(engine *core.Engine) *GRPCServer {
 	}
 }
 
+func (s *GRPCServer) CreateKey(ctx context.Context, req *kmsv1.CreateKeyRequest) (*kmsv1.CreateKeyResponse, error) {
+	coreReq := core.CreateKeyRequest{
+		Algorithm: core.Algorithm(req.Algorithm),
+		Name:      req.Name,
+	}
+
+	resp, err := s.Engine.CreateKey(ctx, coreReq)
+	if err != nil {
+		return nil, mapErrorToGRPC(err)
+	}
+
+	return &kmsv1.CreateKeyResponse{
+		KeyId:     resp.KeyID,
+		Version:   uint32(resp.Version),
+		CreatedAt: resp.CreateAt.String(),
+	}, nil
+}
+
 func (s *GRPCServer) Encrypt(ctx context.Context, req *kmsv1.EncryptRequest) (*kmsv1.EncryptResponse, error) {
 	coreReq := core.EncryptRequest{
 		KeyID:          req.KeyId,
@@ -51,5 +69,23 @@ func (s *GRPCServer) Decrypt(ctx context.Context, req *kmsv1.DecryptRequest) (*k
 
 	return &kmsv1.DecryptResponse{
 		Plaintext: resp.Plaintext,
+	}, nil
+}
+
+func (s *GRPCServer) CreateKey(ctx context.Context, req *kmsv1.CreateKeyRequest) (*kmsv1.CreateKeyResponse, error) {
+	coreReq := core.CreateKeyRequest{
+		Algorithm: core.Algorithm(req.Algorithm),
+		Name:      req.Name,
+	}
+
+	resp, err := s.Engine.CreateKey(ctx, coreReq)
+	if err != nil {
+		return nil, mapErrorToGRPC(err)
+	}
+
+	return &kmsv1.CreateKeyResponse{
+		KeyId:     resp.KeyID,
+		Version:   uint32(resp.Version),
+		CreatedAt: resp.CreateAt.String(),
 	}, nil
 }

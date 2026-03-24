@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	KMS_CreateKey_FullMethodName       = "/kms.v1.KMS/CreateKey"
 	KMS_Encrypt_FullMethodName         = "/kms.v1.KMS/Encrypt"
 	KMS_Decrypt_FullMethodName         = "/kms.v1.KMS/Decrypt"
 	KMS_GenerateDataKey_FullMethodName = "/kms.v1.KMS/GenerateDataKey"
@@ -32,6 +33,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type KMSClient interface {
+	CreateKey(ctx context.Context, in *CreateKeyRequest, opts ...grpc.CallOption) (*CreateKeyResponse, error)
 	Encrypt(ctx context.Context, in *EncryptRequest, opts ...grpc.CallOption) (*EncryptResponse, error)
 	Decrypt(ctx context.Context, in *DecryptRequest, opts ...grpc.CallOption) (*DecryptResponse, error)
 	GenerateDataKey(ctx context.Context, in *GenerateDataKeyRequest, opts ...grpc.CallOption) (*GenerateDataKeyResponse, error)
@@ -47,6 +49,16 @@ type kMSClient struct {
 
 func NewKMSClient(cc grpc.ClientConnInterface) KMSClient {
 	return &kMSClient{cc}
+}
+
+func (c *kMSClient) CreateKey(ctx context.Context, in *CreateKeyRequest, opts ...grpc.CallOption) (*CreateKeyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateKeyResponse)
+	err := c.cc.Invoke(ctx, KMS_CreateKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *kMSClient) Encrypt(ctx context.Context, in *EncryptRequest, opts ...grpc.CallOption) (*EncryptResponse, error) {
@@ -123,6 +135,7 @@ func (c *kMSClient) DisableKey(ctx context.Context, in *DisableKeyRequest, opts 
 // All implementations must embed UnimplementedKMSServer
 // for forward compatibility.
 type KMSServer interface {
+	CreateKey(context.Context, *CreateKeyRequest) (*CreateKeyResponse, error)
 	Encrypt(context.Context, *EncryptRequest) (*EncryptResponse, error)
 	Decrypt(context.Context, *DecryptRequest) (*DecryptResponse, error)
 	GenerateDataKey(context.Context, *GenerateDataKeyRequest) (*GenerateDataKeyResponse, error)
@@ -140,6 +153,9 @@ type KMSServer interface {
 // pointer dereference when methods are called.
 type UnimplementedKMSServer struct{}
 
+func (UnimplementedKMSServer) CreateKey(context.Context, *CreateKeyRequest) (*CreateKeyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateKey not implemented")
+}
 func (UnimplementedKMSServer) Encrypt(context.Context, *EncryptRequest) (*EncryptResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Encrypt not implemented")
 }
@@ -180,6 +196,24 @@ func RegisterKMSServer(s grpc.ServiceRegistrar, srv KMSServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&KMS_ServiceDesc, srv)
+}
+
+func _KMS_CreateKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KMSServer).CreateKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KMS_CreateKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KMSServer).CreateKey(ctx, req.(*CreateKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _KMS_Encrypt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -315,6 +349,10 @@ var KMS_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "kms.v1.KMS",
 	HandlerType: (*KMSServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateKey",
+			Handler:    _KMS_CreateKey_Handler,
+		},
 		{
 			MethodName: "Encrypt",
 			Handler:    _KMS_Encrypt_Handler,
