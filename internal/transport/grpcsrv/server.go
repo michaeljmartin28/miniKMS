@@ -2,6 +2,7 @@ package grpcsrv
 
 import (
 	"context"
+	"time"
 
 	kmsv1 "github.com/michaeljmartin28/minikms/gen/kms/v1"
 	"github.com/michaeljmartin28/minikms/internal/core"
@@ -32,7 +33,7 @@ func (s *GRPCServer) CreateKey(ctx context.Context, req *kmsv1.CreateKeyRequest)
 	return &kmsv1.CreateKeyResponse{
 		KeyId:     resp.KeyID,
 		Version:   uint32(resp.Version),
-		CreatedAt: resp.CreateAt.String(),
+		CreatedAt: resp.CreateAt.Format(time.RFC3339),
 	}, nil
 }
 
@@ -130,7 +131,7 @@ func (s *GRPCServer) EnableKey(ctx context.Context, req *kmsv1.EnableKeyRequest)
 	return &kmsv1.KeyMetadata{
 		KeyId:         resp.KeyID,
 		Enabled:       resp.State.IsEnabled(),
-		CreatedAt:     resp.CreatedAt.String(),
+		CreatedAt:     resp.CreatedAt.Format(time.RFC3339),
 		LatestVersion: uint32(resp.LatestVersion),
 		Algorithm:     string(resp.Algorithm),
 	}, nil
@@ -146,7 +147,7 @@ func (s *GRPCServer) DisableKey(ctx context.Context, req *kmsv1.DisableKeyReques
 	return &kmsv1.KeyMetadata{
 		KeyId:         resp.KeyID,
 		Enabled:       resp.State.IsEnabled(),
-		CreatedAt:     resp.CreatedAt.String(),
+		CreatedAt:     resp.CreatedAt.Format(time.RFC3339),
 		LatestVersion: uint32(resp.LatestVersion),
 		Algorithm:     string(resp.Algorithm),
 	}, nil
