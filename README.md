@@ -1,46 +1,84 @@
 # miniKMS
 
-_A lightweight, developer‑friendly Key Management Service for local development and CI._
+_A lightweight, developer‑friendly Key Management Service for local development, CI, and integration testing._
 
 miniKMS is a minimal, pluggable, cloud‑shaped KMS emulator written in Go.
+It provides a consistent API for key lifecycle operations, encryption, decryption, and data key generation without requiring AWS, GCP, Azure, or Vault.
+It’s designed for developers who want a KMS experience locally, with zero cloud dependencies.
 
-It provides a simple, consistent way to test encryption, key lifecycle flows, and cloud‑style KMS integrations without running AWS, GCP, Azure, or Vault.
 
-## Features (planned)
+## Features
 
-- Lightweight AES‑GCM encryption engine
-- File‑based key storage
-- REST API for key creation, encryption, and decryption
-- Envelope encryption (data keys)
-- Audit logging
-- Provider modes:
-- Generic mode (clean, simple API)
-- AWS KMS mode
+### Core
+- AES‑GCM encryption engine
+- Versioned key storage (BoltDB backend)
+- Envelope encryption (GenerateDataKey / DecryptDataKey)
+- Key lifecycle operations (create, rotate, enable, disable)
+- Deterministic, test‑friendly behavior
+- Unified error taxonomy
+
+### Transports
+- Full HTTP/JSON API
+- Full gRPC API (protobuf definitions included)
+
+### Developer Experience
+- Docker‑friendly runtime
+- Test store for isolated engine tests
+- Clean, transport‑agnostic core engine
+- SDKs (Go, Node, Python — in progress)
+
+### Provider Modes (planned)
+- Generic mode (simple, cloud‑agnostic API)
+- AWS‑like KMS mode
 - GCP KMS mode
 - Azure Key Vault crypto mode
 - Vault Transit mode
-- Docker‑first developer experience
-- Go client SDK (later JS/Python)
+
 
 ## Why miniKMS?
 
-Cloud KMS systems are powerful but heavy to mock locally.
-miniKMS gives developers a tiny, local, reproducible KMS that behaves like the real thing perfect for:
-
+Cloud KMS systems are powerful but difficult to run locally.
+miniKMS gives you a tiny, reproducible, dependency‑free KMS that behaves like the real thing — perfect for:
 - Local development
 - CI pipelines
-- Integration testing
+- Integration tests
 - Security demos
 - Cloud migration testing
-- Learning KMS
+- Learning KMS concepts
+
+If you’ve ever mocked AWS KMS with hand‑rolled stubs or struggled to test envelope encryption locally, miniKMS is built for you.
 
 ## Project Status
 
-- Early planning and architecture design.
-- Implementation begins after v0.1 design is finalized.
+miniKMS is under active development.
+
+The following components are complete:
+- Core engine
+- Storage layer
+- Crypto provider
+- HTTP transport
+- gRPC transport
+- Test infrastructure
+
+Currently in progress:
+- Go SDK
+- Node + Python SDKs
+- Docker image
+- Demo page
+
+Planned next:
+- AWS‑like provider
+- Web admin portal
+- Additional cloud provider modes
+
 
 ## Documentation
 
-- docs/vision.md — project goals and philosophy
-- docs/architecture.md — core engine, provider interface, storage model
-- docs/roadmap.md — release plan and milestones
+For detailed architecture and design decisions, see:
+
+- `docs/design.md` — the authoritative reference for engine, storage, crypto, transports, and future extensions.
+
+Roadmap and planning are tracked in the GitHub Project board.
+
+
+
