@@ -42,3 +42,11 @@ type DecryptParams struct {
 type DecryptResponse struct {
 	Plaintext []byte `json:"plaintext"`
 }
+
+type KeyMetadata struct {
+	KeyID         string
+	CreatedAt     time.Time
+	State         string
+	Algorithm     string
+	LatestVersion uint32
+}

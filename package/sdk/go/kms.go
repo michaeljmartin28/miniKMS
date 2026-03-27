@@ -41,6 +41,24 @@ func (c *Client) Decrypt(ctx context.Context, keyID string, params DecryptParams
 	return &resp, nil
 }
 
-func (c *Client) EnableKey(ctx context.Context)  {}
-func (c *Client) DisableKey(ctx context.Context) {}
-func (c *Client) RotateKey(ctx context.Context)  {}
+func (c *Client) EnableKey(ctx context.Context, keyID string) (*KeyMetadata, error) {
+	var resp KeyMetadata
+
+	route := fmt.Sprintf("/v1/keys/%s/enable", keyID)
+	err := c.do(ctx, http.MethodPost, route, nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+func (c *Client) DisableKey(ctx context.Context, keyID string) (*KeyMetadata, error) {
+	var resp KeyMetadata
+
+	route := fmt.Sprintf("/v1/keys/%s/disable", keyID)
+	err := c.do(ctx, http.MethodPost, route, nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+func (c *Client) RotateKey(ctx context.Context) {}
