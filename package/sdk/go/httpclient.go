@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -43,16 +43,17 @@ func (c *Client) do(ctx context.Context, method string, path string, in any, out
 	}
 	defer resp.Body.Close()
 	// unmarshal into out
-
-	if resp.StatusCode != http.StatusOK {
-		return errors.New("error in response")
-	}
-
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
-
+	if resp.StatusCode >= 400 {
+		var apiErr ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &apiErr); err != nil {
+			return fmt.Errorf("http %d: %s", resp.StatusCode, string(bodyBytes))
+		}
+		return apiErr
+	}
 	if err = json.Unmarshal(bodyBytes, out); err != nil {
 		return err
 	}

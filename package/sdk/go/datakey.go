@@ -16,7 +16,7 @@ func (c *Client) GenerateDEK(ctx context.Context, keyID string, params GenerateD
 	}
 	return &resp, nil
 }
-func (c *Client) DecryptDEK(ctx context.Context, keyID string, params GenerateDataParams) (*DecryptDataKeyResponse, error) {
+func (c *Client) DecryptDEK(ctx context.Context, keyID string, params DecryptDataKeyParams) (*DecryptDataKeyResponse, error) {
 	var resp DecryptDataKeyResponse
 	route := fmt.Sprintf("/v1/keys/%s/decrypt-data-key", keyID)
 

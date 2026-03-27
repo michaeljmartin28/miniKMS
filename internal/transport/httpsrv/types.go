@@ -1,31 +1,31 @@
 package httpsrv
 
 type CreateKeyRequest struct {
-	Name      string `json:"name"`
-	Algorithm string `json:"algorithm"`
+	Name      string `json:"Name"`
+	Algorithm string `json:"Algorithm"`
 }
 
 type EncryptRequest struct {
-	Plaintext      string `json:"plaintext"`
-	AdditionalData string `json:"additional_data,omitempty"`
+	Plaintext      []byte `json:"Plaintext"`
+	AdditionalData []byte `json:"AdditionalData,omitempty"`
 }
 
 type DecryptRequest struct {
-	Ciphertext     string `json:"ciphertext"`
-	Version        uint32 `json:"version"`
-	AdditionalData string `json:"additional_data,omitempty"`
+	Ciphertext     []byte `json:"Ciphertext"`
+	Version        uint32 `json:"Version"`
+	AdditionalData []byte `json:"AdditionalData,omitempty"`
 }
 
 type GenerateDataKeyRequest struct {
-	AdditionalData string `json:"additional_data,omitempty"`
+	AdditionalData []byte `json:"AdditionalData,omitempty"`
 }
 
 type DecryptDataKeyRequest struct {
-	EncryptedDEK   string `json:"encrypted_dek"`
-	Version        uint32 `json:"version"`
-	AdditionalData string `json:"additional_data,omitempty"`
+	EncryptedDEK   []byte `json:"EncryptedDEK"`
+	Version        uint32 `json:"Version"`
+	AdditionalData []byte `json:"AdditionalData,omitempty"`
 }
 
 type RotateKeyResponse struct {
-	Version uint32 `json:"version"`
+	Version uint32 `json:"Version"`
 }

@@ -5,72 +5,72 @@ import (
 )
 
 type Key struct {
-	KeyID     string    `json:"key_id"`
-	Version   uint32    `json:"version"`
-	CreatedAt time.Time `json:"created_at"`
+	KeyID     string    `json:"KeyID"`
+	Version   uint32    `json:"Version"`
+	CreatedAt time.Time `json:"CreatedAt"`
 }
 
 type CreateKeyParams struct {
-	Name      string `json:"name"`
-	Algorithm string `json:"algorithm"`
+	Name      string `json:"Name"`
+	Algorithm string `json:"Algorithm"`
 }
 
 type CreateKeyResponse struct {
-	KeyID     string    `json:"key_id"`
-	Version   uint32    `json:"version"`
-	CreatedAt time.Time `json:"created_at"`
+	KeyID     string    `json:"KeyID"`
+	Version   uint32    `json:"Version"`
+	CreatedAt time.Time `json:"CreatedAt"`
 }
 
 type EncryptParams struct {
-	Plaintext      []byte `json:"plaintext"`
-	AdditionalData string `json:"additional_data,omitempty"`
+	Plaintext      []byte `json:"Plaintext"`
+	AdditionalData []byte `json:"AdditionalData,omitempty"`
 }
 
 type EncryptResponse struct {
-	Ciphertext []byte `json:"ciphertext"`
-	Version    uint32 `json:"version"`
-	KeyID      string `json:"keyID"`
-	Algorithm  string `json:"algorithm"`
+	Ciphertext []byte `json:"Ciphertext"`
+	Version    uint32 `json:"Version"`
+	KeyID      string `json:"KeyID"`
+	Algorithm  string `json:"Algorithm"`
 }
 
 type DecryptParams struct {
-	Ciphertext     string `json:"ciphertext"`
-	Version        uint32 `json:"version"`
-	AdditionalData string `json:"additional_data,omitempty"`
+	Ciphertext     []byte `json:"Ciphertext"`
+	Version        uint32 `json:"Version"`
+	AdditionalData []byte `json:"AdditionalData,omitempty"`
 }
 
 type DecryptResponse struct {
-	Plaintext []byte `json:"plaintext"`
+	Plaintext []byte `json:"Plaintext"`
 }
 
 type KeyMetadata struct {
-	KeyID         string    `json:"key_id"`
-	CreatedAt     time.Time `json:"created_at"`
-	State         string    `json:"state"`
-	Algorithm     string    `json:"algorithm"`
-	LatestVersion uint32    `json:"latest_version"`
+	KeyID         string    `json:"KeyID"`
+	CreatedAt     time.Time `json:"CreatedAt"`
+	State         string    `json:"State"`
+	Algorithm     string    `json:"Algorithm"`
+	LatestVersion uint32    `json:"LatestVersion"`
 }
 
 type RotateKeyResponse struct {
-	Version uint32 `json:"version"`
+	Version uint32 `json:"Version"`
 }
 
 type GenerateDataParams struct {
-	AdditionalData string `json:"additional_data,omitempty"`
+	AdditionalData []byte `json:"AdditionalData,omitempty"`
 }
 
 type GenerateDataKeyResponse struct {
-	PlaintextDEK []byte `json:"plaintext_dek"`
-	EncryptedDEK []byte `json:"encrypted_dek"`
-	Version      uint32 `json:"version"`
+	PlaintextDEK []byte `json:"PlaintextDEK"`
+	EncryptedDEK []byte `json:"EncryptedDEK"`
+	Version      uint32 `json:"Version"`
 }
 
 type DecryptDataKeyParams struct {
-	EncryptedDEK   string `json:"encrypted_dek"`
-	Version        uint32 `json:"version"`
-	AdditionalData string `json:"additional_data,omitempty"`
+	EncryptedDEK   []byte `json:"EncryptedDEK"`
+	Version        uint32 `json:"Version"`
+	AdditionalData []byte `json:"AdditionalData,omitempty"`
 }
 
 type DecryptDataKeyResponse struct {
-	PlaintextDEK []byte `json:"plaintext_dek"`
+	PlaintextDEK []byte `json:"PlaintextDEK"`
 }
