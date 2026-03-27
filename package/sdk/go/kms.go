@@ -2,13 +2,14 @@ package kms
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 )
 
 func (c *Client) CreateKey(ctx context.Context, params CreateKeyParams) (*Key, error) {
 
 	var resp CreateKeyResponse
-	err := c.do(ctx, http.MethodPost, "v1/keys", params, &resp)
+	err := c.do(ctx, http.MethodPost, "/v1/keys", params, &resp)
 	if err != nil {
 		return nil, err
 	}
@@ -19,8 +20,27 @@ func (c *Client) CreateKey(ctx context.Context, params CreateKeyParams) (*Key, e
 	}, nil
 }
 
-func (c *Client) Encrypt(ctx context.Context)    {}
-func (c *Client) Decrypt(ctx context.Context)    {}
+func (c *Client) Encrypt(ctx context.Context, keyID string, params EncryptParams) (*EncryptResponse, error) {
+	var resp EncryptResponse
+	route := fmt.Sprintf("/v1/keys/%s/encrypt", keyID)
+
+	err := c.do(ctx, http.MethodPost, route, params, &resp)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+func (c *Client) Decrypt(ctx context.Context, keyID string, params DecryptParams) (*DecryptResponse, error) {
+	var resp DecryptResponse
+	route := fmt.Sprintf("/v1/keys/%s/decrypt", keyID)
+
+	err := c.do(ctx, http.MethodPost, route, params, &resp)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 func (c *Client) EnableKey(ctx context.Context)  {}
 func (c *Client) DisableKey(ctx context.Context) {}
 func (c *Client) RotateKey(ctx context.Context)  {}

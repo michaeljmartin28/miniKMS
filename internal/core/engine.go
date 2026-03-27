@@ -69,9 +69,9 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 	}
 
 	response := CreateKeyResponse{
-		KeyID:    meta.KeyID,
-		Version:  version,
-		CreateAt: keyVersion.CreatedAt,
+		KeyID:     meta.KeyID,
+		Version:   version,
+		CreatedAt: keyVersion.CreatedAt,
 	}
 
 	return &response, nil
