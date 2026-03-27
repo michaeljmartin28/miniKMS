@@ -54,3 +54,23 @@ type KeyMetadata struct {
 type RotateKeyResponse struct {
 	Version uint32 `json:"version"`
 }
+
+type GenerateDataParams struct {
+	AdditionalData string `json:"additional_data,omitempty"`
+}
+
+type GenerateDataKeyResponse struct {
+	PlaintextDEK []byte `json:"plaintext_dek"`
+	EncryptedDEK []byte `json:"encrypted_dek"`
+	Version      uint32 `json:"version"`
+}
+
+type DecryptDataKeyParams struct {
+	EncryptedDEK   string `json:"encrypted_dek"`
+	Version        uint32 `json:"version"`
+	AdditionalData string `json:"additional_data,omitempty"`
+}
+
+type DecryptDataKeyResponse struct {
+	PlaintextDEK []byte `json:"plaintext_dek"`
+}
