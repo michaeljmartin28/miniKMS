@@ -44,9 +44,13 @@ type DecryptResponse struct {
 }
 
 type KeyMetadata struct {
-	KeyID         string
-	CreatedAt     time.Time
-	State         string
-	Algorithm     string
-	LatestVersion uint32
+	KeyID         string    `json:"key_id"`
+	CreatedAt     time.Time `json:"created_at"`
+	State         string    `json:"state"`
+	Algorithm     string    `json:"algorithm"`
+	LatestVersion uint32    `json:"latest_version"`
+}
+
+type RotateKeyResponse struct {
+	Version uint32 `json:"version"`
 }
