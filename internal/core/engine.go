@@ -69,9 +69,9 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 	}
 
 	response := CreateKeyResponse{
-		KeyID:    meta.KeyID,
-		Version:  version,
-		CreateAt: keyVersion.CreatedAt,
+		KeyID:     meta.KeyID,
+		Version:   version,
+		CreatedAt: keyVersion.CreatedAt,
 	}
 
 	return &response, nil
@@ -253,7 +253,7 @@ func (e *Engine) DisableKey(ctx context.Context, keyID string) (*KeyMetadata, er
 	}
 
 	keyMetadata.State = KeyStateDisabled
-	err = e.Storage.SaveKey(keyMetadata)
+	err = e.Storage.UpdateKey(keyMetadata)
 	if err != nil {
 		return nil, err
 	}
@@ -270,7 +270,7 @@ func (e *Engine) EnableKey(ctx context.Context, keyID string) (*KeyMetadata, err
 		return nil, fmt.Errorf("key is already enabled")
 	}
 	keyMetadata.State = KeyStateEnabled
-	err = e.Storage.SaveKey(keyMetadata)
+	err = e.Storage.UpdateKey(keyMetadata)
 	if err != nil {
 		return nil, err
 	}

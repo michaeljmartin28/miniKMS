@@ -10,9 +10,9 @@ type CreateKeyRequest struct {
 }
 
 type CreateKeyResponse struct {
-	KeyID    string
-	Version  uint32
-	CreateAt time.Time
+	KeyID     string
+	Version   uint32
+	CreatedAt time.Time
 }
 
 type EncryptRequest struct {
