@@ -5,19 +5,19 @@ import "time"
 // KeyMetadata represents the metadata associated with a key, including its unique identifier,
 // creation time, and current state.
 type KeyMetadata struct {
-	KeyID         string
-	CreatedAt     time.Time
-	State         KeyState
-	Algorithm     Algorithm
-	LatestVersion uint32
+	KeyID         string    `json:"keyId"`
+	CreatedAt     time.Time `json:"createdAt"`
+	State         KeyState  `json:"state"`
+	Algorithm     Algorithm `json:"algorithm"`
+	LatestVersion uint32    `json:"latestVersion"`
 }
 
 // KeyVersion represents a specific version of a key, including its version number,
 // creation time, and the key material.
 type KeyVersion struct {
-	Version   uint32
-	CreatedAt time.Time
-	Material  []byte
+	Version   uint32    `json:"version"`
+	CreatedAt time.Time `json:"createdAt"`
+	Material  []byte    `json:"material"`
 }
 
 //

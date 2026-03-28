@@ -93,9 +93,7 @@ func (h *Handler) DisableKey(w http.ResponseWriter, r *http.Request) {
 }
 func (h *Handler) Encrypt(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-
 	keyID := r.PathValue("id")
-
 	req, err := DecodeRequest[EncryptRequest](r.Body)
 	if err != nil {
 		WriteError(w, ErrBadJSON)
