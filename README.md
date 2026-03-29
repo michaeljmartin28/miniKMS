@@ -2,6 +2,10 @@
 
 _A lightweight, developer‑friendly Key Management Service for local development, CI, and integration testing._
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/michaeljmartin28/minikms/package/sdk/go.svg)](https://pkg.go.dev/github.com/michaeljmartin28/minikms/package/sdk/go)
+[![npm version](https://img.shields.io/npm/v/@minikms/sdk.svg)](https://www.npmjs.com/package/@minikms/sdk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 miniKMS is a minimal, pluggable, cloud‑shaped KMS emulator written in Go.
 It provides a consistent API for key lifecycle operations, encryption, decryption, and data key generation without requiring AWS, GCP, Azure, or Vault.
 It’s designed for developers who want a KMS experience locally, with zero cloud dependencies.
