@@ -1,12 +1,12 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/michaeljmartin28/minikms/sdk/go.svg)](https://pkg.go.dev/github.com/michaeljmartin28/minikms/sdk/go)[![Go Report Card](https://goreportcard.com/badge/github.com/michaeljmartin28/minikms)](https://goreportcard.com/report/github.com/michaeljmartin28/minikms)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../LICENSE)
 
-
-
 # miniKMS Go SDK
+
 A lightweight Go client for interacting with miniKMS, a minimal Key Management Service designed for secure local development, demos, and portfolio‑grade backend/security engineering work.
 
 The SDK provides a clean, mechanical API for:
+
 - Creating and managing customer master keys (CMKs)
 - Encrypting and decrypting data
 - Generating and decrypting data keys (envelope encryption)
@@ -16,6 +16,7 @@ The SDK provides a clean, mechanical API for:
 It’s dependency‑minimal, concurrency‑safe, and structured the way Go developers expect.
 
 ## Installation
+
 ```bash
 go get github.com/michaeljmartin28/minikms/sdk/go
 ```
@@ -38,7 +39,7 @@ func main() {
 
     // Create a new CMK
     key, err := client.CreateKey(ctx, kms.CreateKeyParams{
-        Algorithm: "AES256_GCM",
+        Algorithm: "AES-256_GCM",
         Name:      "example-key",
     })
     if err != nil {
@@ -68,6 +69,7 @@ func main() {
 ```
 
 ## Client
+
 ```go
 client := kms.NewClient("http://localhost:8080")
 ```
@@ -118,6 +120,7 @@ type EncryptResponse struct {
 ```
 
 ## Decrypting Data
+
 ```go
 resp, err := client.Decrypt(ctx, keyID, kms.DecryptParams{
     Ciphertext: ciphertext,
@@ -135,37 +138,43 @@ dk, err := client.GenerateDataKey(ctx, keyID, kms.GenerateDataKeyParams{
 ```
 
 Returns:
+
 - plaintext DEK
 - encrypted DEK
 - metadata
 
 Decrypt a data key:
+
 ```go
 pt, err := client.DecryptDataKey(ctx, keyID, kms.DecryptDataKeyParams{
     EncryptedDataKey: dk.EncryptedDataKey,
 })
 ```
 
-
 ## Key Lifecycle
 
 Enable a key:
+
 ```go
 client.EnableKey(ctx, keyID)
 ```
 
 Disable a key:
+
 ```go
 client.DisableKey(ctx, keyID)
 ```
+
 Rotate:
 
 ```go
 client.RotateKey(ctx, keyID)
 ```
+
 Each returns updated metadata.
 
 ## Error Handling
+
 All SDK methods return Go error values.
 Future versions will include typed errors such as:
 
@@ -174,10 +183,13 @@ Future versions will include typed errors such as:
 - `ErrInvalidCiphertext`
 
 ## Versioning
+
 All SDK calls target:
+
 ```
 /v1/...
 ```
+
 When the API introduces /v2, the SDK will expose a new client or options without breaking existing code.
 
 License

@@ -3,76 +3,76 @@ package core
 import "time"
 
 type CreateKeyRequest struct {
-	Name      string
-	Algorithm Algorithm
+	Name      string    `json:"name"`
+	Algorithm Algorithm `json:"algorithm"`
 	// Future: KeyUsage, ProtectionLevel, Policy, Tags, etc...
 
 }
 
 type CreateKeyResponse struct {
-	KeyID     string
-	Version   uint32
-	CreatedAt time.Time
+	KeyID     string    `json:"keyId"`
+	Version   uint32    `json:"version"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type EncryptRequest struct {
-	KeyID          string
-	Plaintext      []byte
-	AdditionalData []byte
+	KeyID          string `json:"keyId"`
+	Plaintext      []byte `json:"plaintext"`
+	AdditionalData []byte `json:"additionalData"`
 }
 
 type EncryptResponse struct {
-	Ciphertext []byte
-	Version    uint32
-	KeyID      string
-	Algorithm  Algorithm
+	Ciphertext []byte    `json:"ciphertext"`
+	Version    uint32    `json:"version"`
+	KeyID      string    `json:"keyId"`
+	Algorithm  Algorithm `json:"algorithm"`
 }
 
 type DecryptRequest struct {
-	KeyID          string
-	Ciphertext     []byte
-	AdditionalData []byte
-	Version        uint32
+	KeyID          string `json:"keyId"`
+	Ciphertext     []byte `json:"ciphertext"`
+	AdditionalData []byte `json:"additionalData"`
+	Version        uint32 `json:"version"`
 }
 
 type DecryptResponse struct {
-	Plaintext []byte
+	Plaintext []byte `json:"plaintext"`
 }
 
 type GenerateDataKeyRequest struct {
-	KeyID          string
-	AdditionalData []byte
+	KeyID          string `json:"keyId"`
+	AdditionalData []byte `json:"additionalData"`
 }
 
 type GenerateDataKeyResponse struct {
-	PlaintextDEK []byte
-	EncryptedDEK []byte
-	Version      uint32
+	PlaintextDEK []byte `json:"plaintextDEK"`
+	EncryptedDEK []byte `json:"encryptedDEK"`
+	Version      uint32 `json:"version"`
 }
 
 type DecryptDataKeyRequest struct {
-	KeyID          string
-	EncryptedDEK   []byte
-	Version        uint32
-	AdditionalData []byte
+	KeyID          string `json:"keyId"`
+	EncryptedDEK   []byte `json:"encryptedDEK"`
+	Version        uint32 `json:"version"`
+	AdditionalData []byte `json:"additionalData"`
 }
 
 type DecryptDataKeyResponse struct {
-	PlaintextDEK []byte
+	PlaintextDEK []byte `json:"plaintextDEK"`
 }
 
 type DisableKeyRequest struct {
-	KeyID string
+	KeyID string `json:"keyId"`
 }
 
 type DisableKeyResponse struct {
-	KeyMetadata KeyMetadata
+	KeyMetadata KeyMetadata `json:"keyMetadata"`
 }
 
 type EnableKeyRequest struct {
-	KeyID string
+	KeyID string `json:"keyId"`
 }
 
 type EnableKeyResponse struct {
-	KeyMetadata KeyMetadata
+	KeyMetadata KeyMetadata `json:"keyMetadata"`
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	kms "github.com/michaeljmartin28/minikms/sdk/go"
+	kms "github.com/michaeljmartin28/minikms/package/sdk/go"
 )
 
 func main() {
