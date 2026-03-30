@@ -26,6 +26,13 @@ class CreateKeyRequest:
     algorithm: str
 
 @dataclass(frozen=True)
+class CreateKeyResponse:
+  keyId: str
+  name: str
+  algorithm: str
+  createdAt: str
+
+@dataclass(frozen=True)
 class EncryptRequest:
     plaintext: str
     additionalData: str
