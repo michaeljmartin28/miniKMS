@@ -6,18 +6,14 @@ import (
 	"net/http"
 )
 
-func (c *Client) CreateKey(ctx context.Context, params CreateKeyParams) (*Key, error) {
+func (c *Client) CreateKey(ctx context.Context, params CreateKeyParams) (*KeyMetadata, error) {
 
-	var resp CreateKeyResponse
+	var resp KeyMetadata
 	err := c.do(ctx, http.MethodPost, "/v1/keys", params, &resp)
 	if err != nil {
 		return nil, err
 	}
-	return &Key{
-		KeyID:     resp.KeyID,
-		Version:   resp.Version,
-		CreatedAt: resp.CreatedAt,
-	}, nil
+	return &resp, nil
 }
 
 func (c *Client) EnableKey(ctx context.Context, keyID string) (*KeyMetadata, error) {
