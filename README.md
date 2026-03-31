@@ -29,7 +29,6 @@ It’s designed for developers who want a KMS experience locally, with zero clou
 - Docker‑friendly runtime
 - Test store for isolated engine tests
 - Clean, transport‑agnostic core engine
-- SDKs (Go, Node, Python — in progress)
 
 ### Provider Modes (planned)
 - Generic mode (simple, cloud‑agnostic API)
@@ -37,6 +36,20 @@ It’s designed for developers who want a KMS experience locally, with zero clou
 - GCP KMS mode
 - Azure Key Vault crypto mode
 - Vault Transit mode
+
+### SDKs
+
+**Go:**  
+[![Go SDK](https://img.shields.io/badge/pkg.go.dev-reference-00ADD8?logo=go)](https://pkg.go.dev/github.com/michaeljmartin28/minikms/package/sdk/go)  
+[Source](package/sdk/go)
+
+**Node:**  
+[![npm version](https://img.shields.io/npm/v/@minikms/sdk.svg?logo=npm)](https://www.npmjs.com/package/@minikms/sdk)  
+[Source](package/sdk/node)
+
+**Python:**  
+[![PyPI](https://img.shields.io/pypi/v/minikms.svg?logo=python&logoColor=white)](https://pypi.org/project/minikms/)  
+[Source](package/sdk/python)
 
 
 ## Why miniKMS?
