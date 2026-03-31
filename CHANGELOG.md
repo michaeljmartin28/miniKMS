@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased] – 31 March 2026
+## [Unreleased - v0.1.3] – 31 March 2026
 
 ### Added
 - Full end‑to‑end test coverage for Node and Python SDKs
@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased] – 24 March 2026
+## [Unreleased v0.1.0] – 24 March 2026
 
 ### Added
 - Complete core engine implementation  
