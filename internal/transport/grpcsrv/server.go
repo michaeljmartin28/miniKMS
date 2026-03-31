@@ -19,7 +19,7 @@ func NewGRPCServer(engine *core.Engine) *GRPCServer {
 	}
 }
 
-func (s *GRPCServer) CreateKey(ctx context.Context, req *kmsv1.CreateKeyRequest) (*kmsv1.CreateKeyResponse, error) {
+func (s *GRPCServer) CreateKey(ctx context.Context, req *kmsv1.CreateKeyRequest) (*kmsv1.KeyMetadata, error) {
 	coreReq := core.CreateKeyRequest{
 		Algorithm: core.Algorithm(req.Algorithm),
 		Name:      req.Name,
@@ -30,10 +30,12 @@ func (s *GRPCServer) CreateKey(ctx context.Context, req *kmsv1.CreateKeyRequest)
 		return nil, mapErrorToGRPC(err)
 	}
 
-	return &kmsv1.CreateKeyResponse{
-		KeyId:     resp.KeyID,
-		Version:   resp.LatestVersion,
-		CreatedAt: resp.CreatedAt.Format(time.RFC3339),
+	return &kmsv1.KeyMetadata{
+		KeyId:         resp.KeyID,
+		Enabled:       resp.State,
+		Algorithm:     string(resp.Algorithm),
+		LatestVersion: resp.LatestVersion,
+		CreatedAt:     resp.CreatedAt.Format(time.RFC3339),
 	}, nil
 }
 
