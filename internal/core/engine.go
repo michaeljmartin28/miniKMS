@@ -39,7 +39,7 @@ func NewEngine(storage KeyStore, crypto Crypto, cfg EngineConfig) *Engine {
 // compile-time assertion to ensure Engine implements the CoreKMS interface
 var _ CoreKMS = (*Engine)(nil)
 
-func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKeyResponse, error) {
+func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*KeyMetadata, error) {
 
 	keyBytes, err := e.Crypto.GenerateKey(req.Algorithm)
 	version := uint32(1)
@@ -68,13 +68,7 @@ func (e *Engine) CreateKey(ctx context.Context, req CreateKeyRequest) (*CreateKe
 		return nil, err
 	}
 
-	response := CreateKeyResponse{
-		KeyID:     meta.KeyID,
-		Version:   version,
-		CreatedAt: keyVersion.CreatedAt,
-	}
-
-	return &response, nil
+	return &meta, nil
 }
 
 func (e *Engine) Encrypt(ctx context.Context, req EncryptRequest) (*EncryptResponse, error) {

@@ -1,7 +1,5 @@
 package core
 
-import "time"
-
 type CreateKeyRequest struct {
 	Name      string    `json:"name"`
 	Algorithm Algorithm `json:"algorithm"`
@@ -10,9 +8,7 @@ type CreateKeyRequest struct {
 }
 
 type CreateKeyResponse struct {
-	KeyID     string    `json:"keyId"`
-	Version   uint32    `json:"version"`
-	CreatedAt time.Time `json:"createdAt"`
+	KeyMetadata KeyMetadata `json:"keyMetadata"`
 }
 
 type EncryptRequest struct {

@@ -32,7 +32,7 @@ func (s *GRPCServer) CreateKey(ctx context.Context, req *kmsv1.CreateKeyRequest)
 
 	return &kmsv1.CreateKeyResponse{
 		KeyId:     resp.KeyID,
-		Version:   resp.Version,
+		Version:   resp.LatestVersion,
 		CreatedAt: resp.CreatedAt.Format(time.RFC3339),
 	}, nil
 }
