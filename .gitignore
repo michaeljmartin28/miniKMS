@@ -53,3 +53,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Python SDK
+package/sdk/python/minikms/__pycache__/*
+package/sdk/python/dist/*

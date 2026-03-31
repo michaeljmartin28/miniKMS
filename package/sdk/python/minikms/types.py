@@ -1,6 +1,7 @@
 from dataclasses import dataclass
+from typing import Optional
 
-@dataclass(frozen=True)
+@dataclass
 class KeyMetadata:
     keyId: str
     createdAt: str
@@ -8,60 +9,71 @@ class KeyMetadata:
     algorithm: str
     latestVersion: int
 
-@dataclass(frozen=True)
+@dataclass
 class RotateKeyResponse:
     version: int
 
-@dataclass(frozen=True)
+@dataclass
 class EnableKeyResponse:
     keyMetadata: KeyMetadata
 
-@dataclass(frozen=True)
+@dataclass
 class DisableKeyResponse:
     keyMetadata: KeyMetadata
 
-@dataclass(frozen=True)
+@dataclass
 class CreateKeyRequest:
     name: str
     algorithm: str
 
-@dataclass(frozen=True)
+@dataclass
 class CreateKeyResponse:
   keyId: str
   name: str
   algorithm: str
   createdAt: str
 
-@dataclass(frozen=True)
+@dataclass
 class EncryptRequest:
     plaintext: str
-    additionalData: str
+    additionalData: Optional[str] = None
 
-@dataclass(frozen=True)
+@dataclass
 class EncryptResponse:
+    keyId: str
     ciphertext: str
-    additionalData: str
     version: int 
     algorithm: str
+    additionalData: Optional[str] = None
 
-@dataclass(frozen=True)
+@dataclass
 class DecryptRequest:
     ciphertext: str
-    additionalData: str
     version: int 
+    additionalData: Optional[str] = None
 
-@dataclass(frozen=True)
+@dataclass
 class DecryptResponse:
     plaintext: str
 
-@dataclass(frozen=True)
-class GenerateDataKeyResponse:
-    plaintextKey: str
-    encryptedKey: str
-    keyVersion: int
+@dataclass
+class GenerateDataKeyRequest:
+    additionalData: Optional[str] = None
 
-@dataclass(frozen=True)
+@dataclass
+class GenerateDataKeyResponse:
+    plaintextDEK: str
+    encryptedDEK: str
+    version: int
+
+@dataclass
+class DecryptDataKeyRequest:
+    encryptedDEK: str
+    version: int
+    additionalData: Optional[str] = None
+
+@dataclass
 class DecryptDataKeyResponse:
-    plaintextKey: str
+    plaintextDEK: str
 
 
