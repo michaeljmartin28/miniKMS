@@ -1,0 +1,22 @@
+[project]
+name = "minikms"
+version = "0.1.3"
+description = "Python SDK for miniKMS"
+authors = [
+    { name = "Michael Martin" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+
+dependencies = [
+    "httpx>=0.27.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/michaeljmartin28/minikms"
+Repository = "https://github.com/michaeljmartin28/minikms"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

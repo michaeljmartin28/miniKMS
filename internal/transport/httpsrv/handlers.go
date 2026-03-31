@@ -17,6 +17,7 @@ func NewHandler(engine *core.Engine) *Handler {
 }
 
 func WriteJSON(w http.ResponseWriter, status int, v any) {
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(v)
@@ -42,8 +43,6 @@ func (h *Handler) CreateKey(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// log.Printf("request: %+v\n", request)
-
 	if req.Name == "" || req.Algorithm == "" {
 		WriteError(w, ErrMissingFields)
 		return
@@ -61,7 +60,6 @@ func (h *Handler) CreateKey(w http.ResponseWriter, r *http.Request) {
 		WriteError(w, err)
 		return
 	}
-
 	WriteJSON(w, http.StatusCreated, response)
 }
 

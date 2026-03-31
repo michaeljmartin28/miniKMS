@@ -11,13 +11,6 @@ export interface CreateKeyRequest {
   algorithm: string;
 }
 
-export interface CreateKeyResponse {
-  keyId: string;
-  name: string;
-  algorithm: string;
-  createdAt: string;
-}
-
 export interface EncryptRequest {
   plaintext: string;
   additionalData?: string;
@@ -66,3 +59,4 @@ export interface RotateKeyResponse {
 
 export type EnableKeyResponse = KeyMetadata;
 export type DisableKeyResponse = KeyMetadata;
+export type CreateKeyResponse = KeyMetadata;

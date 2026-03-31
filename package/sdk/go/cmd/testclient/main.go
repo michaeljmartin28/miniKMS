@@ -12,7 +12,7 @@ func main() {
 	ctx := context.Background()
 	client := kms.NewClient("http://localhost:8080")
 
-	// 1. Create a key
+	// Create a key
 	key, err := client.CreateKey(ctx, kms.CreateKeyParams{
 		Algorithm: "AES-256-GCM",
 		Name:      "sdk-test",
@@ -25,7 +25,7 @@ func main() {
 
 	fmt.Println("Created key:", key.KeyID)
 
-	// 2. Encrypt
+	// Encrypt
 	enc, err := client.Encrypt(ctx, key.KeyID, kms.EncryptParams{
 		Plaintext: []byte("hello sdk"),
 	})
@@ -34,17 +34,17 @@ func main() {
 	}
 	fmt.Println("Ciphertext:", enc.Ciphertext)
 
-	// 3. Decrypt
+	// Decrypt
 	dec, err := client.Decrypt(ctx, key.KeyID, kms.DecryptParams{
 		Ciphertext: enc.Ciphertext,
-		Version:    key.Version,
+		Version:    key.LatestVersion,
 	})
 	if err != nil {
 		log.Fatalf("Decrypt failed: %v", err)
 	}
 	fmt.Println("Decrypted:", string(dec.Plaintext))
 
-	// 4. Generate a data key
+	// Generate a data key
 	dk, err := client.GenerateDEK(ctx, key.KeyID, kms.GenerateDataParams{})
 	if err != nil {
 		log.Fatalf("GenerateDataKey failed: %v", err)
@@ -52,7 +52,7 @@ func main() {
 	fmt.Println("Generated DEK (plaintext):", dk.PlaintextDEK)
 	fmt.Println("Generated DEK (encrypted):", dk.EncryptedDEK)
 
-	// 5. Decrypt the data key
+	// Decrypt the data key
 	pt, err := client.DecryptDEK(ctx, key.KeyID, kms.DecryptDataKeyParams{
 		EncryptedDEK: dk.EncryptedDEK,
 		Version:      dk.Version,

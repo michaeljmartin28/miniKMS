@@ -1,9 +1,9 @@
-[![Go Reference](https://pkg.go.dev/badge/github.com/michaeljmartin28/minikms/sdk/go.svg)](https://pkg.go.dev/github.com/michaeljmartin28/minikms/sdk/go)[![Go Report Card](https://goreportcard.com/badge/github.com/michaeljmartin28/minikms)](https://goreportcard.com/report/github.com/michaeljmartin28/minikms)
+[![Go Reference](https://pkg.go.dev/badge/github.com/michaeljmartin28/minikms/package/sdk/go.svg)](https://pkg.go.dev/github.com/michaeljmartin28/minikms/package/sdk/go)[![Go Report Card](https://goreportcard.com/badge/github.com/michaeljmartin28/minikms)](https://goreportcard.com/report/github.com/michaeljmartin28/minikms)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../LICENSE)
 
-# miniKMS Go SDK
+# miniKMS Official Go SDK
 
-A lightweight Go client for interacting with miniKMS, a minimal Key Management Service designed for secure local development, demos, and portfolio‑grade backend/security engineering work.
+The official Go client for **miniKMS**, a lightweight Key Management Service designed for demos, local development, and portfolio‑grade backend/security engineering projects.
 
 The SDK provides a clean, mechanical API for:
 
@@ -14,6 +14,8 @@ The SDK provides a clean, mechanical API for:
 - Retrieving key metadata
 
 It’s dependency‑minimal, concurrency‑safe, and structured the way Go developers expect.
+
+---
 
 ## Installation
 
@@ -81,12 +83,14 @@ The client is safe for concurrent use and performs:
 - error propagation
 - typed response decoding
 
-## Creating Keys
+## Key Lifecycle
+
+### Creating Keys
 
 ```go
 key, err := client.CreateKey(ctx, kms.CreateKeyParams{
-    Algorithm: "AES256_GCM",
     Name:      "my-key",
+    Algorithm: "AES-256-GCM",
 })
 ```
 
@@ -100,21 +104,44 @@ type Key struct {
 }
 ```
 
+### Enable a key:
+
+```go
+_, err := client.EnableKey(ctx, key.KeyID)
+```
+
+### Disable a key:
+
+```go
+_, err := client.DisableKey(ctx, key.KeyID)
+```
+
+### Rotate a key:
+
+```go
+rot, err := client.RotateKey(ctx, key.KeyID)
+fmt.Println(rot.Version)
+
+```
+
+Each returns updated metadata.
+
 ## Encrypting Data
 
 ```go
-resp, err := client.Encrypt(ctx, keyID, kms.EncryptParams{
-    Plaintext: []byte("secret"),
+enc, err := client.Encrypt(ctx, key.KeyID, kms.EncryptParams{
+    Plaintext:      []byte("hello world"),
+    AdditionalData: []byte("optional AAD"),
 })
 ```
 
-Returns ciphertext and metadata:
+Returns:
 
 ```go
 type EncryptResponse struct {
     Ciphertext []byte
+    AdditionalData []byte
     Version    uint32
-    KeyID      string
     Algorithm  string
 }
 ```
@@ -122,56 +149,39 @@ type EncryptResponse struct {
 ## Decrypting Data
 
 ```go
-resp, err := client.Decrypt(ctx, keyID, kms.DecryptParams{
-    Ciphertext: ciphertext,
-})
-```
-
-## Data Keys (Envelope Encryption)
-
-Generate a data key
-
-```go
-dk, err := client.GenerateDataKey(ctx, keyID, kms.GenerateDataKeyParams{
-    Bytes: 32,
+dec, err := client.Decrypt(ctx, key.KeyID, kms.DecryptParams{
+    Ciphertext: enc.Ciphertext,
+    AdditionalData: enc.AdditionalData,
+    Version:    enc.Version,
 })
 ```
 
 Returns:
 
-- plaintext DEK
-- encrypted DEK
-- metadata
+```go
+type DecryptResponse struct {
+    Plaintext []byte
+}
+```
 
-Decrypt a data key:
+## Data Keys (Envelope Encryption)
+
+### Generate a data key
 
 ```go
-pt, err := client.DecryptDataKey(ctx, keyID, kms.DecryptDataKeyParams{
-    EncryptedDataKey: dk.EncryptedDataKey,
+dk, err := client.GenerateDataKey(ctx, key.KeyID)
+fmt.Println(dk.PlaintextKey)  // []byte
+fmt.Println(dk.EncryptedKey)  // base64-encoded []byte
+```
+
+### Decrypt a data key:
+
+```go
+pt, err := client.DecryptDataKey(ctx, key.KeyID, kms.DecryptDataKeyParams{
+    EncryptedKey: dk.EncryptedKey,
 })
+fmt.Println(pt.PlaintextKey)
 ```
-
-## Key Lifecycle
-
-Enable a key:
-
-```go
-client.EnableKey(ctx, keyID)
-```
-
-Disable a key:
-
-```go
-client.DisableKey(ctx, keyID)
-```
-
-Rotate:
-
-```go
-client.RotateKey(ctx, keyID)
-```
-
-Each returns updated metadata.
 
 ## Error Handling
 
@@ -186,7 +196,7 @@ Future versions will include typed errors such as:
 
 All SDK calls target:
 
-```
+```Code
 /v1/...
 ```
 
