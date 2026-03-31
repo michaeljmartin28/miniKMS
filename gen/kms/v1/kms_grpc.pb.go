@@ -2,13 +2,12 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v7.34.0
-// source: proto/kms/v1/kms.proto
+// source: kms/v1/kms.proto
 
 package kmsv1
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -34,7 +33,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type KMSClient interface {
-	CreateKey(ctx context.Context, in *CreateKeyRequest, opts ...grpc.CallOption) (*CreateKeyResponse, error)
+	CreateKey(ctx context.Context, in *CreateKeyRequest, opts ...grpc.CallOption) (*KeyMetadata, error)
 	Encrypt(ctx context.Context, in *EncryptRequest, opts ...grpc.CallOption) (*EncryptResponse, error)
 	Decrypt(ctx context.Context, in *DecryptRequest, opts ...grpc.CallOption) (*DecryptResponse, error)
 	GenerateDataKey(ctx context.Context, in *GenerateDataKeyRequest, opts ...grpc.CallOption) (*GenerateDataKeyResponse, error)
@@ -52,9 +51,9 @@ func NewKMSClient(cc grpc.ClientConnInterface) KMSClient {
 	return &kMSClient{cc}
 }
 
-func (c *kMSClient) CreateKey(ctx context.Context, in *CreateKeyRequest, opts ...grpc.CallOption) (*CreateKeyResponse, error) {
+func (c *kMSClient) CreateKey(ctx context.Context, in *CreateKeyRequest, opts ...grpc.CallOption) (*KeyMetadata, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateKeyResponse)
+	out := new(KeyMetadata)
 	err := c.cc.Invoke(ctx, KMS_CreateKey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -136,7 +135,7 @@ func (c *kMSClient) DisableKey(ctx context.Context, in *DisableKeyRequest, opts 
 // All implementations must embed UnimplementedKMSServer
 // for forward compatibility.
 type KMSServer interface {
-	CreateKey(context.Context, *CreateKeyRequest) (*CreateKeyResponse, error)
+	CreateKey(context.Context, *CreateKeyRequest) (*KeyMetadata, error)
 	Encrypt(context.Context, *EncryptRequest) (*EncryptResponse, error)
 	Decrypt(context.Context, *DecryptRequest) (*DecryptResponse, error)
 	GenerateDataKey(context.Context, *GenerateDataKeyRequest) (*GenerateDataKeyResponse, error)
@@ -154,7 +153,7 @@ type KMSServer interface {
 // pointer dereference when methods are called.
 type UnimplementedKMSServer struct{}
 
-func (UnimplementedKMSServer) CreateKey(context.Context, *CreateKeyRequest) (*CreateKeyResponse, error) {
+func (UnimplementedKMSServer) CreateKey(context.Context, *CreateKeyRequest) (*KeyMetadata, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateKey not implemented")
 }
 func (UnimplementedKMSServer) Encrypt(context.Context, *EncryptRequest) (*EncryptResponse, error) {
@@ -384,5 +383,5 @@ var KMS_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/kms/v1/kms.proto",
+	Metadata: "kms/v1/kms.proto",
 }
