@@ -4,6 +4,11 @@ _A lightweight, developer‑friendly Key Management Service for local developmen
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/michaeljmartin28/minikms/package/sdk/go.svg)](https://pkg.go.dev/github.com/michaeljmartin28/minikms/package/sdk/go)
 [![npm version](https://img.shields.io/npm/v/@minikms/sdk.svg)](https://www.npmjs.com/package/@minikms/sdk)
+[![PyPI version](https://img.shields.io/pypi/v/minikms.svg)](https://pypi.org/project/minikms/)
+
+![Docker Pulls](https://img.shields.io/docker/pulls/michaeljmartin28/minikms)
+![Docker Image Size](https://img.shields.io/docker/image-size/michaeljmartin28/minikms/0.2.0)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 miniKMS is a minimal, pluggable, cloud‑shaped KMS emulator written in Go.
@@ -47,10 +52,30 @@ It’s designed for developers who want a KMS experience locally, with zero clou
 [![npm version](https://img.shields.io/npm/v/@minikms/sdk.svg?logo=npm)](https://www.npmjs.com/package/@minikms/sdk)  
 [Source](package/sdk/node)
 
-**Python:**  
+**Python:**   
 [![PyPI](https://img.shields.io/pypi/v/minikms.svg?logo=python&logoColor=white)](https://pypi.org/project/minikms/)  
 [Source](package/sdk/python)
 
+### Docker
+![Docker Pulls](https://img.shields.io/docker/pulls/michaeljmartin28/minikms)
+![Docker Image Size](https://img.shields.io/docker/image-size/michaeljmartin28/minikms/0.2.0)
+miniKMS is now available as a lightweight Docker image (~9.5MB):
+
+#### Run the server
+```bash
+docker run -p 8080:8080 michaeljmartin28/minikms:0.2.0
+```
+
+Or always pull the latest stable version:
+```bash
+docker run -p 8080:8080 michaeljmartin28/minikms:latest
+```
+Build from source
+```bash
+docker build \
+  --build-arg VERSION=0.2.0 \
+  -t minikms:0.2.0 .
+```
 
 ## Why miniKMS?
 
@@ -76,18 +101,20 @@ The following components are complete:
 - HTTP transport
 - gRPC transport
 - Test infrastructure
+- Node SDK (npm)
+- Go SDK
+- Python SDK (pypi)
+- Public Docker image
 
 Currently in progress:
-- Go SDK
-- Node + Python SDKs
-- Docker image
 - Demo page
 
 Planned next:
 - AWS‑like provider
 - Web admin portal
 - Additional cloud provider modes
-
+- Adding health/version endpoints
+- Adding user-specific support
 
 ## Documentation
 
