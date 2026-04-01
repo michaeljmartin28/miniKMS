@@ -50,7 +50,7 @@ export class Client {
   encrypt(keyId: string, req: EncryptRequest) {
     const body = {
       plaintext: this.toBase64(req.plaintext),
-      additionalData: this.toBase64(req.additionalData),
+      additionalData: this.toBase64(req?.additionalData),
     };
     return this.do<EncryptResponse>("POST", `/v1/keys/${keyId}/encrypt`, body);
   }
@@ -58,7 +58,7 @@ export class Client {
   decrypt(keyId: string, req: DecryptRequest) {
     const body = {
       ciphertext: req.ciphertext,
-      additionalData: this.toBase64(req.additionalData),
+      additionalData: this.toBase64(req?.additionalData),
       version: req.version,
     };
     return this.do<DecryptResponse>(
@@ -70,7 +70,7 @@ export class Client {
 
   generateDataKey(keyId: string, req: GenerateDataKeyRequest) {
     const body = {
-      additionalData: this.toBase64(req.additionalData),
+      additionalData: this.toBase64(req?.additionalData),
     };
     return this.do<GenerateDataKeyResponse>(
       "POST",
@@ -87,7 +87,7 @@ export class Client {
     const body = {
       encryptedDEK: req.encryptedDEK, // already base64
       version: req.version,
-      additionalData: this.toBase64(req.additionalData),
+      additionalData: this.toBase64(req?.additionalData),
     };
     return this.do<DecryptDataKeyResponse>(
       "POST",
