@@ -59,6 +59,7 @@ It’s designed for developers who want a KMS experience locally, with zero clou
 ### Docker
 ![Docker Pulls](https://img.shields.io/docker/pulls/michaeljmartin28/minikms)
 ![Docker Image Size](https://img.shields.io/docker/image-size/michaeljmartin28/minikms/0.2.0)
+
 miniKMS is now available as a lightweight Docker image (~9.5MB):
 
 #### Run the server
