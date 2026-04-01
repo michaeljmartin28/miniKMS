@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -17,11 +18,12 @@ import (
 	"github.com/michaeljmartin28/minikms/internal/storage"
 	"github.com/michaeljmartin28/minikms/internal/transport/grpcsrv"
 	"github.com/michaeljmartin28/minikms/internal/transport/httpsrv"
+	"github.com/michaeljmartin28/minikms/package/version"
 	"google.golang.org/grpc"
 )
 
 func main() {
-
+	fmt.Printf("miniKMS %s starting...\n", version.Version)
 	cfg := config.Load()
 
 	store, err := storage.NewBoltStore(cfg.DBPath)
