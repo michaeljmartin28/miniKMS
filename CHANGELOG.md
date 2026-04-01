@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## 0.2.0 — 2026-03-31
+- Added Docker distribution
+- Fixed npm SDK bug
+- Unified versioning across all SDKs
+- Added server version injection
+
 
 ## [Unreleased - v0.1.3] – 31 March 2026
 
