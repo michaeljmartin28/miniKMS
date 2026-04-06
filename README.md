@@ -98,4 +98,170 @@ For detailed architecture and design decisions, see:
 Roadmap and planning are tracked in the GitHub Project board.
 
 
+## API Reference
+All endpoints are versioned under /v1.
 
+
+## Key Management
+
+### Create Key
+```Code
+POST /v1/keys
+```
+Creates a new symmetric key.
+
+**Request**
+```json
+{
+  "name": "my-key",
+  "algorithm": "AES-256-GCM"
+}
+```
+**Response**
+Returns key metadata (id, name, algorithm, version, enabled, createdAt).
+
+
+### Enable Key
+```Code
+POST /v1/keys/{id}/enable
+```
+Enables a previously disabled key.
+
+**Response**
+Returns updated key metadata.
+
+### Disable Key
+```Code
+POST /v1/keys/{id}/disable
+```
+
+Disables a key, preventing encryption/decryption.
+
+**Response**
+Returns updated key metadata.
+
+## Cryptographic Operations
+
+### Encrypt
+```Code
+POST /v1/keys/{id}/encrypt
+```
+Encrypts plaintext using the specified key and its current version.
+
+**Request**
+```json
+{
+  "plaintext": "base64-encoded bytes",
+  "additionalData": "base64-encoded bytes (optional)"
+}
+```
+
+**Response**
+```json
+{
+  "ciphertext": "base64-encoded bytes",
+  "version": 1
+}
+```
+
+### Decrypt
+```Code
+POST /v1/keys/{id}/decrypt
+```
+
+Decrypts ciphertext using the specified key and version.
+
+**Request**
+```json
+{
+  "ciphertext": "base64-encoded bytes",
+  "version": 1,
+  "additionalData": "base64-encoded bytes (optional)"
+}
+```
+
+**Response**
+```json
+{
+  "plaintext": "base64-encoded bytes"
+}
+```
+
+## Envelope Encryption (Data Keys)
+
+### Generate Data Key
+```Code
+POST /v1/keys/{id}/generate-data-key
+```
+
+Generates a new Data Encryption Key (DEK).
+Returns both the plaintext DEK and an encrypted DEK that can be safely stored.
+
+**Request**
+
+```json
+{
+  "additionalData": "base64-encoded bytes (optional)"
+}
+```
+
+**Response**
+
+```json
+{
+  "plaintextDEK": "base64-encoded bytes",
+  "encryptedDEK": "base64-encoded bytes",
+  "version": 1
+}
+```
+
+### Decrypt Data Key
+```Code
+POST /v1/keys/{id}/decrypt-data-key
+```
+
+Decrypts an encrypted DEK back into its plaintext form.
+
+**Request**
+```json
+{
+  "encryptedDEK": "base64-encoded bytes",
+  "version": 1,
+  "additionalData": "base64-encoded bytes (optional)"
+}
+```
+
+**Response**
+```json
+{
+  "plaintextDEK": "base64-encoded bytes"
+}
+```
+
+## Key Rotation
+
+### Rotate Key
+```Code
+POST /v1/keys/{id}/rotate
+```
+
+Creates a new key version and updates the active version.
+
+**Response**
+```json
+{
+  "version": 2
+}
+```
+
+## Summary of All Endpoints
+```Code
+POST /v1/keys
+POST /v1/keys/{id}/enable
+POST /v1/keys/{id}/disable
+POST /v1/keys/{id}/encrypt
+POST /v1/keys/{id}/decrypt
+POST /v1/keys/{id}/generate-data-key
+POST /v1/keys/{id}/decrypt-data-key
+POST /v1/keys/{id}/rotate
+```
